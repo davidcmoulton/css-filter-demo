@@ -1,0 +1,167 @@
+:root {
+  --color-brand: rgb(95, 158, 160);
+  --color-brand-semi: rgba(95, 158, 160, 0.3);
+  --color-brand-semi-semi: rgba(95, 158, 160, 0.1);
+  --color-brand-semi-semi-semi: rgba(95, 158, 160, 0.09);
+  --color-furniture: rgb(221, 221, 221);
+
+  --transition-duration: 300ms;
+  --timing-function: ease-out
+}
+
+body {
+  max-width: 70rem;
+  margin: 2rem auto;
+  background-color: var(--color-brand-semi-semi-semi);
+}
+
+body * {
+  font-family: sans-serif;
+}
+
+main {
+  padding: 0 24px;
+}
+
+h1,
+h2 {
+  color: var(--color-brand);
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.image-wrapper {
+  border: 3px solid var(--color-brand-semi-semi-semi);
+  border-radius: 25px;
+  margin-bottom: 24px;
+  padding: 24px;
+}
+
+.image-wrapper.active {
+  border-color: var(--color-brand);
+}
+
+.grid {
+  background-color: var(--color-brand-semi-semi);
+  border-radius: 25px;
+  font-size: 1rem;
+  padding-top: 77px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 16.5rem);
+  justify-content: center;
+  gap: 24px;
+}
+
+.filter {
+  font-size: 1.5rem;
+  border: 3px solid var(--color-brand-semi-semi);
+  border-radius: 5px;
+  margin: 0;
+  padding: 0;
+  transition: border-color var(--transition-duration) var(--timing-function);
+}
+
+.filter:hover,
+.filter.active {
+  border-color: var(--color-brand);
+  border-width: 3px;
+}
+
+.filter:hover:not(.active) {
+  animation-name: breathe;
+  animation-duration: 0.75s;
+  animation-timing-function: var(--timing-function);
+  animation-iteration-count: 1;
+}
+
+@keyframes breathe {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.filter__label {
+  display: block;
+}
+
+.filter:hover .filter__toggle {
+  background-color: var(--color-brand);
+  color: wheat;
+}
+
+.filter.active .filter__toggle {
+  background-color: var(--color-brand);
+  border-color: var(--color-brand);
+  color: wheat;
+}
+
+.filter__toggle {
+  background-color: var(--color-brand-semi-semi);
+  padding: 12px;
+  transition: background-color var(--transition-duration) var(--timing-function);
+}
+
+.filter__toggle:hover {
+  background-color: var(--color-brand-semi-semi);
+  border-color: var(--color-brand-semi-semi);
+}
+
+.filter__slider {
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  height: 48px;
+}
+
+input[type="range"] {
+  margin: 0;
+  width: 100%;
+}
+
+.controls {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+button {
+  font-size: 1rem;
+  color: white;
+  background-color: var(--color-brand);
+  border: 1px solid var(--color-brand);
+  border-radius: 5px;
+  padding: 3px 12px 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  color: var(--color-brand);
+  background-color: white;
+}
+
+.hidden {
+  display: none;
+}
+
+.visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  user-select: none;
+}
