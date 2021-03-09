@@ -1,9 +1,8 @@
 :root {
   --color-brand: rgb(95, 158, 160);
-  --color-brand-semi: rgba(95, 158, 160, 0.3);
-  --color-brand-semi-semi: rgba(95, 158, 160, 0.1);
-  --color-brand-semi-semi-semi: rgba(95, 158, 160, 0.09);
-  --color-furniture: rgb(221, 221, 221);
+  --color-brand-light-1: rgb(213, 229, 229);
+  --color-brand-light-2: rgb(226, 237, 237);
+  --color-brand-feint: rgb(240, 246, 246);
 
   --transition-duration: 300ms;
   --timing-function: ease-out
@@ -12,7 +11,7 @@
 body {
   max-width: 70rem;
   margin: 2rem auto;
-  background-color: var(--color-brand-semi-semi-semi);
+  background-color: var(--color-brand-feint);
 }
 
 body * {
@@ -42,7 +41,7 @@ h1 {
 }
 
 .image-wrapper {
-  border: 3px solid var(--color-brand-semi-semi-semi);
+  border: 3px solid var(--color-brand-light-2);
   background-color: white;
   border-radius: 25px;
   margin-bottom: 24px;
@@ -56,7 +55,7 @@ h1 {
 }
 
 .grid {
-  background-color: var(--color-brand-semi-semi);
+  background-color: var(--color-brand-light-2);
   border-radius: 25px;
   font-size: 1rem;
   padding-top: 77px;
@@ -68,7 +67,7 @@ h1 {
 
 .filter {
   font-size: 1.5rem;
-  border: 3px solid var(--color-brand-semi-semi);
+  border: 3px solid var(--color-brand-light-1);
   border-radius: 5px;
   margin: 0;
   padding: 0;
@@ -80,20 +79,8 @@ h1 {
   border-width: 3px;
 }
 
-.filter:hover:not(.active) .filter__toggle {
-  /*transform: scale(1.1);*/
-}
-
-@keyframes breathe {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
+.filter.active .filter__slider {
+  background-color: var(--color-brand-light-1);
 }
 
 .filter__label {
@@ -111,19 +98,12 @@ h1 {
   color: wheat;
 }
 
-.filter.active .filter__slider {
-  background-color: var(--color-brand-semi-semi);
-}
-
 .filter__toggle {
-  background-color: var(--color-brand-semi-semi);
+  background-color: var(--color-brand-light-1);
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
   padding: 12px;
   transition: background-color var(--transition-duration) var(--timing-function);
-}
-
-.filter__toggle:hover {
-  /*background-color: var(--color-brand-semi-semi);*/
-  border-color: var(--color-brand-semi-semi);
 }
 
 .filter__slider {
@@ -159,6 +139,10 @@ button:hover,
 button[disabled] {
   color: var(--color-brand);
   background-color: white;
+}
+
+button[disabled] {
+  cursor: unset;
 }
 
 button:first-child {
