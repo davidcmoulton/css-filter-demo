@@ -11,9 +11,15 @@
 <main>
 
   <h1>CSS filter examples</h1>
+
   <h2>Sample image</h2>
-  <div class="image-wrapper">
-    <img src="./image.svg" alt="Sample image for applying filters to">
+  <div class="instructions">
+    <p>Drop an image file in the area underneath to replace the current image, or choose one with the file picker.</p>
+    <input type="file" id="filePicker" class="file-picker">
+  </div>
+
+  <div class="image-wrapper" id="dropZone">
+    <img src="./image.svg" alt="Sample image to which the filters are applied." id="sampleImage">
   </div>
   <h2>Filters</h2>
   <script src="filters.js"></script>

@@ -5,7 +5,7 @@
   --color-brand-feint: rgb(240, 246, 246);
 
   --transition-duration: 300ms;
-  --timing-function: ease-out
+  --timing-function: ease-out;
 }
 
 body {
@@ -40,6 +40,37 @@ h1 {
   text-align: center;
 }
 
+.instructions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.file-picker {
+  display: block;
+}
+
+.drop-zone {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 20vh;
+  width: 80vw;
+  max-width: 67rem;
+  margin: 0 auto 48px auto;
+  padding: 12px;
+  border: 3px solid var(--color-brand-light-2)
+}
+
+.drop-zone.active {
+  border-color: var(--color-brand);
+}
+
+.drop-zone > * {
+  text-align: center;
+}
+
 .image-wrapper {
   border: 3px solid var(--color-brand-light-2);
   background-color: white;
@@ -48,6 +79,14 @@ h1 {
   padding: 24px;
   position: sticky;
   top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-wrapper img {
+  max-width: 50vw;
+  max-height: 50vh;
 }
 
 .image-wrapper.active {
@@ -145,10 +184,10 @@ button[disabled] {
   cursor: unset;
 }
 
-button:first-child {
+.controls button:first-child {
   margin-right: 12px;
 }
-button:last-child {
+.controls button:last-child {
   width: 10rem;
   margin-left: 12px;
 }

@@ -1,6 +1,6 @@
 (function (window) {
   const doc = window.document;
-  const image = doc.querySelector('img');
+  const image = doc.querySelector('#sampleImage');
   const imageWrapper = doc.querySelector('.image-wrapper');
 
   const filters = [
@@ -78,7 +78,7 @@
     },
   ];
 
-  const buildTemplate = (name, min, max, step, initial) => `
+  const buildFilterTemplate = (name, min, max, step, initial) => `
     <fieldset class="filter">
       <div class="filter__toggle">
         <input type="checkbox" class="visually-hidden" name="filters" id="${name}" value="on" />
@@ -166,7 +166,7 @@
     const form = document.createElement('form');
     form.classList.add('grid')
     filters.forEach((filter) => {
-      form.innerHTML += buildTemplate(filter.name, filter.min, filter.max, filter.step, filter.initial);
+      form.innerHTML += buildFilterTemplate(filter.name, filter.min, filter.max, filter.step, filter.initial);
     });
     form.innerHTML += '<div class="controls" id="controls"></div>'
     const controls = form.querySelector('#controls');
@@ -180,7 +180,72 @@
     doc.querySelector('main').insertBefore(form, doc.querySelector('script'));
   };
 
+  const setupImageSelection = () => {
+    const filePicker = doc.querySelector('#filePicker');
+
+    const pickFile = (e) => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        image.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    filePicker.addEventListener('change', pickFile);
+  };
+
+  const setupDropZone = () => {
+
+    const interceptDefaults = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    const handleDrop = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          image.src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+      }
+
+      // if the image was dragged from a browser, determine its url
+      const transferItems = e.dataTransfer.items || [];
+      [].forEach.call(transferItems, (item) => {
+        const regex = /^.*src="([^"]+)".*$/;
+        let regexResult;
+        if (item.type === 'text/html') {
+          item.getAsString(function (item) {
+            // Expecting string of the format:
+            // <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"><img src="[URL]" alt="some_text">
+            regexResult = regex.exec(item);
+            if (regexResult) {
+              image.src = regexResult[1];
+            }
+          });
+        }
+      });
+    };
+
+    const dropZone = doc.querySelector('#dropZone');
+    dropZone.addEventListener('dragenter', interceptDefaults, false);
+    dropZone.addEventListener('dragover', function (e) {
+      interceptDefaults(e);
+      e.dataTransfer.dropEffect = 'copy';
+    }, false);
+    dropZone.addEventListener('drop', handleDrop, false);
+  };
+
   buildForm();
+  setupImageSelection();
+  setupDropZone();
   update();
 
 })(window);
