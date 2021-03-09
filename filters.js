@@ -102,11 +102,10 @@
       image.style.filter += `${name}(${magnitude}`;
     } else {
       const filterData = filters.find((filter) => filter.name === name);
-      const initialMagnitude = `${filterData.initial}${filterData.unit}`;
-      magnitudeReporter.innerHTML = initialMagnitude;
+      magnitudeElement.value = filterData.initial;
       magnitudeElement.setAttribute('disabled', 'disabled');
       magnitudeElement.closest('.filter').classList.remove('active');
-
+      magnitudeReporter.innerHTML = `${filterData.initial}${filterData.unit}`;
     }
   };
 
