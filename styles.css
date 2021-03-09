@@ -36,9 +36,12 @@ h1 {
 
 .image-wrapper {
   border: 3px solid var(--color-brand-semi-semi-semi);
+  background-color: white;
   border-radius: 25px;
   margin-bottom: 24px;
   padding: 24px;
+  position: sticky;
+  top: 0;
 }
 
 .image-wrapper.active {
