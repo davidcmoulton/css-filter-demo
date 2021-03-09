@@ -91,6 +91,16 @@
     </fieldset>
 `;
 
+  const buildButton = (id, text, type) => {
+    const button = document.createElement('button');
+    button.setAttribute('id', id);
+    if (type) {
+      button.setAttribute('type', type);
+    }
+    button.innerHTML = text;
+    return button;
+  }
+
   const setFilter = (name, unit = '') => {
     const magnitudeElement = doc.querySelector(`#magnitude_${name}`);
     const magnitudeReporter = doc.querySelector(`#magnitudeReporter_${name}`);
@@ -126,10 +136,15 @@
     filters.forEach((filter) => {
       setFilter(filter.name, filter.unit);
     });
+    const copyButton = doc.querySelector('#copy');
     if (isNonDefaultFilterApplied()) {
       imageWrapper.classList.add('active');
+      copyButton.innerHTML = 'Copy to clipboard'
+      copyButton.removeAttribute('disabled');
+      doc.querySelector('#copy').classList.remove('hidden')
     } else {
       imageWrapper.classList.remove('active');
+      copyButton.classList.add('hidden');
     }
   };
 
@@ -137,7 +152,15 @@
     const form = doc.querySelector('form');
     form.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => checkbox.checked = false);
     update();
-  }
+  };
+
+  const copyToClipboard = (e) => {
+    e.preventDefault();
+    navigator.clipboard.writeText(`filter: ${image.style.filter};`);
+    const copyButton = doc.querySelector('#copy');
+    copyButton.innerHTML = 'Copied!'
+    copyButton.setAttribute('disabled', 'disabled');
+  };
 
   const buildForm = () => {
     const form = document.createElement('form');
@@ -145,10 +168,15 @@
     filters.forEach((filter) => {
       form.innerHTML += buildTemplate(filter.name, filter.min, filter.max, filter.step, filter.initial);
     });
-    form.innerHTML += '<div class="controls"><button id="reset" type="reset">Reset</button></div>'
+    form.innerHTML += '<div class="controls" id="controls"></div>'
+    const controls = form.querySelector('#controls');
+    controls.appendChild(buildButton('reset', 'Reset', 'reset'));
+    controls.appendChild(buildButton('copy', 'Copy to clipboard'));
+
     form.querySelectorAll('input')
         .forEach((input) => input.addEventListener('change', update));
     form.querySelector('#reset').addEventListener('click', reset);
+    form.querySelector('#copy').addEventListener('click', copyToClipboard);
     doc.querySelector('main').insertBefore(form, doc.querySelector('script'));
   };
 
