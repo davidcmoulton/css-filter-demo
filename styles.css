@@ -75,17 +75,13 @@ h1 {
   transition: border-color var(--transition-duration) var(--timing-function);
 }
 
-.filter:hover,
 .filter.active {
   border-color: var(--color-brand);
   border-width: 3px;
 }
 
-.filter:hover:not(.active) {
-  animation-name: breathe;
-  animation-duration: 0.75s;
-  animation-timing-function: var(--timing-function);
-  animation-iteration-count: 1;
+.filter:hover:not(.active) .filter__toggle {
+  /*transform: scale(1.1);*/
 }
 
 @keyframes breathe {
@@ -104,7 +100,7 @@ h1 {
   display: block;
 }
 
-.filter:hover .filter__toggle {
+.filter__toggle:hover {
   background-color: var(--color-brand);
   color: wheat;
 }
@@ -115,6 +111,10 @@ h1 {
   color: wheat;
 }
 
+.filter.active .filter__slider {
+  background-color: var(--color-brand-semi-semi);
+}
+
 .filter__toggle {
   background-color: var(--color-brand-semi-semi);
   padding: 12px;
@@ -122,7 +122,7 @@ h1 {
 }
 
 .filter__toggle:hover {
-  background-color: var(--color-brand-semi-semi);
+  /*background-color: var(--color-brand-semi-semi);*/
   border-color: var(--color-brand-semi-semi);
 }
 
