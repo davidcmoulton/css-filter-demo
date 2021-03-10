@@ -164,7 +164,7 @@
 
   const buildForm = () => {
     const form = document.createElement('form');
-    form.classList.add('grid')
+    form.classList.add('filters-grid')
     filters.forEach((filter) => {
       form.innerHTML += buildFilterTemplate(filter.name, filter.min, filter.max, filter.step, filter.initial);
     });
@@ -177,7 +177,7 @@
         .forEach((input) => input.addEventListener('change', update));
     form.querySelector('#reset').addEventListener('click', reset);
     form.querySelector('#copy').addEventListener('click', copyToClipboard);
-    doc.querySelector('main').insertBefore(form, doc.querySelector('script'));
+    doc.querySelector('#filters').insertBefore(form, doc.querySelector('#filtersRider'));
   };
 
   const setupImageSelection = () => {

@@ -8,23 +8,30 @@
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-<main>
+<main class="page-grid">
 
   <h1>CSS filter examples</h1>
 
-  <h2>Sample image</h2>
-  <div class="instructions">
-    <p>Drop an image file in the area underneath to replace the current image, or choose one with the file picker.</p>
-    <input type="file" id="filePicker" class="file-picker">
-  </div>
+  <section class="image-section">
+    <h2>Sample image</h2>
+    <div class="instructions">
+      <p>Drop an image file in the area underneath to replace the current image, or choose one with the file picker.</p>
+      <input type="file" id="filePicker" class="file-picker">
+    </div>
 
-  <div class="image-wrapper" id="dropZone">
-    <img src="./image.svg" alt="Sample image to which the filters are applied." id="sampleImage">
-  </div>
-  <h2>Filters</h2>
-  <script src="filters.js"></script>
-  <p>Note that <code>drop-shadow()</code> and <code>url()</code> filters are omitted from this list. <code>drop-shadow()</code> is similar to <code>box-shadow</code>, but you can't use <code>inset</code> nor provide any value for spread. It might get some hardware acceleration, depending on the browser. <code>url()</code> references an SVG filter, and as such is out of scope.</p>
+    <div class="image-wrapper" id="dropZone">
+      <img src="./image.svg" alt="Sample image to which the filters are applied." id="sampleImage">
+    </div>
+  </section>
+
+  <section id="filters">
+    <h2>Filters</h2>
+    <p id="filtersRider">Note that <code>drop-shadow()</code> and <code>url()</code> filters are omitted from this list. <code>drop-shadow()</code> is similar to <code>box-shadow</code>, but you can't use <code>inset</code> nor provide any value for spread. It might get some hardware acceleration, depending on the browser. <code>url()</code> references an SVG filter, and as such is out of scope.</p>
+  </section>
 
 </main>
+
+<script src="filters.js"></script>
+
 </body>
 </html>
