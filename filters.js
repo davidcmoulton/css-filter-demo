@@ -243,9 +243,11 @@
     dropZone.addEventListener('drop', handleDrop, false);
   };
 
-  buildForm();
-  setupImageSelection();
-  setupDropZone();
-  update();
+  window.addEventListener('DOMContentLoaded', () => {
+    buildForm();
+    setupImageSelection();
+    setupDropZone();
+    update();
+  });
 
 })(window);
