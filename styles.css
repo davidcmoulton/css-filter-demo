@@ -184,10 +184,10 @@ p {
 
 
 .filter__drag_handle {
-  display:none;
   padding-top: 9px;
   padding-bottom: 9px;
   cursor: grab;
+  display: none;
 }
 
 .filter__drag_handle:hover [data-filter-move-icon] {

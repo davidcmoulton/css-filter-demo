@@ -196,73 +196,45 @@
     doc.querySelector('#filters').insertBefore(form, doc.querySelector('#filtersRider'));
   };
 
-  const setupImageSelection = () => {
-    const filePicker = doc.querySelector('#filePicker');
-
-    const pickFile = (e) => {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        image.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
+  const processImageFile = (file) => {
+    if (!file) {
+      return;
     }
-
-    filePicker.addEventListener('change', pickFile);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      image.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
   };
 
-  const setupDropZone = () => {
+  const setupImageSelection = () => {
+    doc.querySelector('#filePicker').addEventListener('change', (e) => {
+      processImageFile(e.target.files[0]);
+  });
+  };
 
-    const interceptDefaults = (e) => {
+  const setupImageDropZone = () => {
+    const handleFileDrop = (e) => {
       e.preventDefault();
       e.stopPropagation();
+      processImageFile(e.dataTransfer.files[0]);
     };
 
-    const handleDrop = (e) => {
+    const handDragOver = (e) => {
       e.preventDefault();
       e.stopPropagation();
-
-      const file = e.dataTransfer.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          image.src = e.target.result;
-        }
-        reader.readAsDataURL(file);
-      }
-
-      // if the image was dragged from a browser, determine its url
-      const transferItems = e.dataTransfer.items || [];
-      [].forEach.call(transferItems, (item) => {
-        const regex = /^.*src="([^"]+)".*$/;
-        let regexResult;
-        if (item.type === 'text/html') {
-          item.getAsString(function (item) {
-            // Expecting string of the format:
-            // <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"><img src="[URL]" alt="some_text">
-            regexResult = regex.exec(item);
-            if (regexResult) {
-              image.src = regexResult[1];
-            }
-          });
-        }
-      });
+      e.dataTransfer.dropEffect = 'copy';
     };
 
     const dropZone = doc.querySelector('#dropZone');
-    dropZone.addEventListener('dragenter', interceptDefaults, false);
-    dropZone.addEventListener('dragover', function (e) {
-      interceptDefaults(e);
-      e.dataTransfer.dropEffect = 'copy';
-    }, false);
-    dropZone.addEventListener('drop', handleDrop, false);
+    dropZone.addEventListener('dragover', handDragOver);
+    dropZone.addEventListener('drop', handleFileDrop, false);
   };
 
   window.addEventListener('DOMContentLoaded', () => {
     buildForm();
     setupImageSelection();
-    setupDropZone();
+    setupImageDropZone();
     update();
   });
 
