@@ -124,6 +124,7 @@ h1 {
 
 .filter__label {
   display: block;
+  padding: 12px;
 }
 
 .filter__toggle:hover {
@@ -141,7 +142,6 @@ h1 {
   background-color: var(--color-brand-light-1);
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
-  padding: 12px;
   transition: background-color var(--transition-duration) var(--timing-function);
 }
 
