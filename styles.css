@@ -163,8 +163,8 @@ p {
 
 
 .filter__drag_handle {
-  padding-top: 9px;
-  padding-bottom: 9px;
+  height: 100%;
+  padding: 9px 4px 6px 0;
   cursor: grab;
 }
 
@@ -190,10 +190,6 @@ p {
 .filter.active .filter__slider {
   border-color: var(--color-brand);
   transform: translateY(0);
-}
-
-.filter__drag_handle {
-  height: 100%;
 }
 
 input[type="range"] {
