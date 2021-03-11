@@ -171,6 +171,15 @@
     e.target.closest('.filter').classList.remove('scale');
   };
 
+  const setupDrag = (e) => {
+    const userFilter = e.target.closest('.filter');
+    userFilter.classList.add('scale');
+    userFilter.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain',userFilter.getAttribute('id'));
+      e.dataTransfer.dropEffect = 'move';
+    });
+  };
+
   const buildForm = () => {
     const oldform = doc.querySelector('form.filters-grid');
     if (oldform) {
@@ -192,12 +201,20 @@
     form.querySelector('#reset').addEventListener('click', reset);
     form.querySelector('#copy').addEventListener('click', copyToClipboard);
     form.querySelectorAll('[data-filter-move-icon]').forEach((icon) => {
+      // TODO: Deregister all drop zones when mouse not over drop handle
+      // icon.removeEventListener('mouseenter', setupDragDropZones) isn't enough due to listeners set up in setupDragDropZones not being deregistered when setupDragDropZones is deregistered.
       icon.addEventListener('mouseenter', scaleupFilter);
+      icon.addEventListener('mouseenter', setupDrag);
+      icon.addEventListener('mouseenter', setupDragDropZones);
       icon.addEventListener('mouseleave', undoFilterScaleup);
+      icon.addEventListener('mouseleave', (e) => {
+        icon.removeEventListener('mouseenter', setupDrag);
+        icon.removeEventListener('mouseenter', setupDragDropZones);
+      });
     });
 
     doc.querySelector('#filters').insertBefore(form, doc.querySelector('#filtersRider'));
-    setupDragDropFilters();
+    // setupDragDropZones();
   };
 
   const processImageFile = (file) => {
@@ -235,14 +252,14 @@
     dropZone.addEventListener('drop', handleFileDrop, false);
   };
 
-  const setupDragDropFilters = () => {
-    const draggableFilters = doc.querySelectorAll('.filter[draggable="true"]');
-    draggableFilters.forEach((draggableFilter) => {
-      draggableFilter.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('text/plain', e.target.id);
-        e.dataTransfer.dropEffect = 'move';
-      });
-    });
+  const setupDragDropZones = () => {
+    // const draggableFilters = doc.querySelectorAll('.filter[draggable="true"]');
+    // draggableFilters.forEach((draggableFilter) => {
+    //   draggableFilter.addEventListener('dragstart', (e) => {
+    //     e.dataTransfer.setData('text/plain', e.target.id);
+    //     e.dataTransfer.dropEffect = 'move';
+    //   });
+    // });
     const dropZones = doc.querySelectorAll('[data-filter-drop-zone]');
     dropZones.forEach((dropZone) => {
       dropZone.addEventListener('dragover', (e) => {
@@ -253,7 +270,14 @@
         e.preventDefault();
         e.stopPropagation();
         const data = e.dataTransfer.getData('text/plain');
-        dropZone.parentElement.insertBefore(doc.getElementById(data), dropZone.nextElementSibling);
+        const element = data !== '' ? doc.querySelector(`#${data}`) : null;
+        if (element) {
+          if (dropZone.nextElementSibling) {
+            dropZone.parentElement.insertBefore(doc.getElementById(data), dropZone.nextElementSibling);
+          } else {
+            dropZone.parentElement.appendChild(doc.getElementById(data));
+          }
+        }
         update();
       });
 
@@ -264,7 +288,6 @@
     buildForm();
     setupImageSelection();
     setupImageDropZone();
-    // setupDragDropFilters();
     update();
   });
 
