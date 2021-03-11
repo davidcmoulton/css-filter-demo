@@ -3,80 +3,71 @@
   const image = doc.querySelector('#sampleImage');
   const imageWrapper = doc.querySelector('.image-wrapper');
 
-  const filters = [
-    {
-      name: 'blur',
+  const filters = {
+    blur: {
       min: 0,
       max: 10,
       step: 0.5,
       unit: 'px',
       initial: 0,
     },
-    {
-      name: 'brightness',
+    brightness: {
       min: 0,
       max: 200,
       step: 1,
       unit: '%',
       initial: 100,
     },
-    {
-      name: 'contrast',
+    contrast: {
       min: 0,
       max: 200,
       step: 1,
       unit: '%',
       initial: 100,
     },
-    {
-      name: 'grayscale',
+    grayscale: {
       min: 0,
       max: 100,
       step: 1,
       unit: '%',
       initial: 0,
     },
-    {
-      name: 'hue-rotate',
+    'hue-rotate': {
       min: 0,
       max: 360,
       step: 1,
       unit: 'deg',
       initial: 0,
     },
-    {
-      name: 'invert',
+    invert: {
       min: 0,
       max: 100,
       step: 1,
       unit: '%',
       initial: 0,
     },
-    {
-      name: 'opacity',
+    opacity: {
       min: 0,
       max: 100,
       step: 1,
       unit: '%',
       initial: 100,
     },
-    {
-      name: 'saturate',
+    saturate: {
       min: 0,
       max: 200,
       step: 1,
       unit: '%',
       initial: 100,
     },
-    {
-      name: 'sepia',
+    sepia: {
       min: 0,
       max: 100,
       step: 1,
       unit: '%',
       initial: 0,
     },
-  ];
+};
 
   const buildFilterTemplate = (name, min, max, step, initial) => `
     <fieldset class="filter" draggable="true" id="filter_${name}" data-filter-drop-zone>
@@ -115,7 +106,7 @@
       magnitudeElement.closest('.filter').classList.add('active');
       image.style.filter += `${name}(${magnitude}`;
     } else {
-      const filterData = filters.find((filter) => filter.name === name);
+      const filterData = filters[name];
       magnitudeElement.value = filterData.initial;
       magnitudeElement.setAttribute('disabled', 'disabled');
       magnitudeElement.closest('.filter').classList.remove('active');
@@ -126,9 +117,12 @@
   const isNonDefaultFilterApplied = () => {
     const appliedFilters = image.style.filter;
     let nonDefaultApplied = false;
-    filters.forEach((filter) => {
-      const startingValue = `${filter.name}(${filter.initial}${filter.unit})`
-      if (appliedFilters.includes(filter.name) && !appliedFilters.includes(startingValue)) {
+    const userFilters = doc.querySelectorAll('.filter');
+    userFilters?.forEach((userFilter) => {
+      const name = userFilter.getAttribute('id').substring(7);
+      const filter = filters[name];
+      const startingValue = `${name}(${filter.initial}${filter.unit})`
+      if (appliedFilters.includes(name) && !appliedFilters.includes(startingValue)) {
         nonDefaultApplied = true;
       }
     });
@@ -137,8 +131,10 @@
 
   const update = () => {
     image.style.filter = '';
-    filters.forEach((filter) => {
-      setFilter(filter.name, filter.unit);
+    const userFilterList = doc.querySelectorAll('.filter');
+    userFilterList.forEach((userFilter) => {
+      const name = userFilter.getAttribute('id').substring(7);
+      setFilter(name, filters[name].unit);
     });
     const copyButton = doc.querySelector('#copy');
     if (isNonDefaultFilterApplied()) {
@@ -182,8 +178,9 @@
     }
     const form = document.createElement('form');
     form.classList.add('filters-grid')
-    filters.forEach((filter) => {
-      form.innerHTML += buildFilterTemplate(filter.name, filter.min, filter.max, filter.step, filter.initial);
+    const filterNames = Object.keys(filters);
+    filterNames.forEach((name) => {
+      form.innerHTML += buildFilterTemplate(name, filters[name].min, filters[name].max, filters[name].step, filters[name].initial);
     });
     form.innerHTML += '<div class="controls" id="controls"></div>'
     const controls = form.querySelector('#controls');
