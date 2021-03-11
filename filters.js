@@ -79,19 +79,20 @@
   ];
 
   const buildFilterTemplate = (name, min, max, step, initial) => `
-    <fieldset class="filter" data-filter-drop-zone>
-      <div class="filter__toggle">
-        <input type="checkbox" class="visually-hidden" name="filters" id="${name}" value="on" />
-        <label class="filter__label" for="${name}">${name}(<output id="magnitudeReporter_${name}"></output>)</label>
-        <div class="filter__drag_handle hidden">
-          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" data-filter-move-icon><path d="M0 0h24v24H0z" fill="none"/><path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"/></svg>
-        </div>
+    <fieldset class="filter" draggable="true" id="filter_${name}" data-filter-drop-zone>
+    <div class="filter__toggle">
+      <input type="checkbox" class="visually-hidden" name="filters" id="${name}" value="on" />
+      <label class="filter__label" for="${name}">${name}(<output id="magnitudeReporter_${name}"></output>)</label>
+      <div class="filter__drag_handle">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" data-filter-move-icon><path d="M0 0h24v24H0z" fill="none"/><path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"/></svg>
       </div>
-      <div class="filter__slider">
-        <label for="magnitude_${name}" class="visually-hidden">Magnitude:</label>
-        <input type="range" min="${min}" max="${max}" step="${step}" id="magnitude_${name}" value="${initial}" disabled/>
-      </div>
-    </fieldset>
+    </div>
+    <div class="filter__slider">
+      <label for="magnitude_${name}" class="visually-hidden">Magnitude:</label>
+      <input type="range" min="${min}" max="${max}" step="${step}" id="magnitude_${name}" value="${initial}" disabled/>
+    </div>
+  </fieldset>
+
 `;
 
   const buildButton = (id, text, type) => {
@@ -154,6 +155,7 @@
   const reset = () => {
     const form = doc.querySelector('form');
     form.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => checkbox.checked = false);
+    buildForm();
     update();
   };
 
@@ -174,6 +176,10 @@
   };
 
   const buildForm = () => {
+    const oldform = doc.querySelector('form.filters-grid');
+    if (oldform) {
+      oldform.parentElement.removeChild(oldform);
+    }
     const form = document.createElement('form');
     form.classList.add('filters-grid')
     filters.forEach((filter) => {
@@ -194,6 +200,7 @@
     });
 
     doc.querySelector('#filters').insertBefore(form, doc.querySelector('#filtersRider'));
+    setupDragDropFilters();
   };
 
   const processImageFile = (file) => {
@@ -226,15 +233,41 @@
       e.dataTransfer.dropEffect = 'copy';
     };
 
-    const dropZone = doc.querySelector('#dropZone');
+    const dropZone = doc.querySelector('#imageDropZone');
     dropZone.addEventListener('dragover', handDragOver);
     dropZone.addEventListener('drop', handleFileDrop, false);
+  };
+
+  const setupDragDropFilters = () => {
+    const draggableFilters = doc.querySelectorAll('.filter[draggable="true"]');
+    draggableFilters.forEach((draggableFilter) => {
+      draggableFilter.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', e.target.id);
+        e.dataTransfer.dropEffect = 'move';
+      });
+    });
+    const dropZones = doc.querySelectorAll('[data-filter-drop-zone]');
+    dropZones.forEach((dropZone) => {
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      });
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const data = e.dataTransfer.getData('text/plain');
+        dropZone.parentElement.insertBefore(doc.getElementById(data), dropZone.nextElementSibling);
+        update();
+      });
+
+    });
   };
 
   window.addEventListener('DOMContentLoaded', () => {
     buildForm();
     setupImageSelection();
     setupImageDropZone();
+    // setupDragDropFilters();
     update();
   });
 

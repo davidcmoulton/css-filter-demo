@@ -60,27 +60,6 @@ p {
   display: block;
 }
 
-.drop-zone {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 20vh;
-  width: 80vw;
-  max-width: 67rem;
-  margin: 0 auto 48px auto;
-  padding: 12px 12px 0;
-  border: 3px solid var(--color-brand-light-2)
-}
-
-.drop-zone.active {
-  border-color: var(--color-brand);
-}
-
-.drop-zone > * {
-  text-align: center;
-}
-
 .image-section {
   background-color: var(--color-brand-feint);
   position: sticky;
@@ -187,7 +166,6 @@ p {
   padding-top: 9px;
   padding-bottom: 9px;
   cursor: grab;
-  display: none;
 }
 
 .filter__drag_handle:hover [data-filter-move-icon] {
