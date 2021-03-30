@@ -197,7 +197,7 @@
     controls.appendChild(buildButton('copy', 'Copy to clipboard'));
 
     form.querySelectorAll('input')
-        .forEach((input) => input.addEventListener('change', update));
+        .forEach((input) => input.addEventListener('input', update));
     form.querySelector('#reset').addEventListener('click', reset);
     form.querySelector('#copy').addEventListener('click', copyToClipboard);
     form.querySelectorAll('[data-filter-move-icon]').forEach((icon) => {
