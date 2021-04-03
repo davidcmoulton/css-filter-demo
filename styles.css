@@ -119,10 +119,6 @@ p {
     box-shadow var(--transition-duration) var(--timing-function);
 }
 
-/* .filter:hover {
-  box-shadow: 2px 2px 2px 2px var(--color-brand-semi);
-} */
-
 .filter.active .filter__slider {
   background-color: var(--color-brand-light-1);
 }
