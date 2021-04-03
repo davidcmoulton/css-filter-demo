@@ -145,7 +145,8 @@ p {
   z-index: 2;
 }
 
-.filter__toggle:hover {
+.filter__toggle:hover,
+.filter__toggle:focus-within {
   background-color: var(--color-brand);
   border-color: var(--color-brand);
   cursor: pointer;
@@ -159,13 +160,35 @@ p {
 
 
 .filter__drag_handle {
+  background-color: inherit;
+  border-style: none;
   height: 100%;
   padding: 9px 4px 6px 0;
   cursor: grab;
 }
 
-.filter__drag_handle:hover [data-filter-move-icon] {
+.filter__drag_handle:hover,
+.filter__drag_handle:active,
+.filter__drag_handle:focus,
+.filter__drag_handle:focus-within {
+  background-color: inherit;
+  border-style: none;
+  outline: none;
+}
+
+.filter__drag_handle [data-filter-move-icon] {
+  transition: transform 200ms ease;
+}
+
+.filter__drag_handle:hover [data-filter-move-icon],
+.filter__drag_handle:active [data-filter-move-icon]
+.filter__drag_handle:focus [data-filter-move-icon],
+.filter__drag_handle:focus-within [data-filter-move-icon] {
   fill: wheat;
+}
+
+.filter__drag_handle:active [data-filter-move-icon] {
+  transform: scale(1.4);
 }
 
 .filter__slider {
