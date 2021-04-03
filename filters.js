@@ -3,6 +3,8 @@
   const image = doc.querySelector('#sampleImage');
   const imageWrapper = doc.querySelector('.image-wrapper');
 
+  // DATA
+
   const filters = {
     blur: {
       min: 0,
@@ -69,6 +71,8 @@
     },
 };
 
+// RENDERING
+
   const buildFilterTemplate = (name, min, max, step, initial) => `
     <fieldset class="filter" draggable="true" id="filter_${name}" data-filter-drop-zone>
     <div class="filter__toggle">
@@ -95,6 +99,53 @@
     button.innerHTML = text;
     return button;
   }
+
+  const scaleupFilter = (e) => {
+    e.target.closest('.filter').classList.add('scale');
+  };
+
+  const undoFilterScaleup = (e) => {
+    e.target.closest('.filter').classList.remove('scale');
+  };
+
+  const buildForm = () => {
+    const oldform = doc.querySelector('form.filters-grid');
+    if (oldform) {
+      oldform.parentElement.removeChild(oldform);
+    }
+    const form = document.createElement('form');
+    form.classList.add('filters-grid')
+    const filterNames = Object.keys(filters);
+    filterNames.forEach((name) => {
+      form.innerHTML += buildFilterTemplate(name, filters[name].min, filters[name].max, filters[name].step, filters[name].initial);
+    });
+    form.innerHTML += '<div class="controls" id="controls"></div>'
+    const controls = form.querySelector('#controls');
+    controls.appendChild(buildButton('reset', 'Reset', 'reset'));
+    controls.appendChild(buildButton('copy', 'Copy to clipboard'));
+
+    form.querySelectorAll('input')
+        .forEach((input) => input.addEventListener('input', update));
+    form.querySelector('#reset').addEventListener('click', reset);
+    form.querySelector('#copy').addEventListener('click', copyToClipboard);
+    form.querySelectorAll('[data-filter-move-icon]').forEach((icon) => {
+      // TODO: Deregister all drop zones when mouse not over drop handle
+      // icon.removeEventListener('mouseenter', setupDragDropZones) isn't enough due to listeners set up in setupDragDropZones not being deregistered when setupDragDropZones is deregistered.
+      icon.addEventListener('mouseenter', scaleupFilter);
+      icon.addEventListener('mouseenter', setupDrag);
+      icon.addEventListener('mouseenter', setupDragDropZones);
+      icon.addEventListener('mouseleave', undoFilterScaleup);
+      icon.addEventListener('mouseleave', (e) => {
+        icon.removeEventListener('mouseenter', setupDrag);
+        icon.removeEventListener('mouseenter', setupDragDropZones);
+      });
+    });
+
+    doc.querySelector('#filters').insertBefore(form, doc.querySelector('#filtersRider'));
+    // setupDragDropZones();
+  };
+
+  // FILTER BEHAVIOUR
 
   const setFilter = (name, unit = '') => {
     const magnitudeElement = doc.querySelector(`#magnitude_${name}`);
@@ -163,13 +214,7 @@
     copyButton.setAttribute('disabled', 'disabled');
   };
 
-  const scaleupFilter = (e) => {
-    e.target.closest('.filter').classList.add('scale');
-  };
-
-  const undoFilterScaleup = (e) => {
-    e.target.closest('.filter').classList.remove('scale');
-  };
+  // DRAG FILTERS
 
   const setupDrag = (e) => {
     const userFilter = e.target.closest('.filter');
@@ -180,42 +225,39 @@
     });
   };
 
-  const buildForm = () => {
-    const oldform = doc.querySelector('form.filters-grid');
-    if (oldform) {
-      oldform.parentElement.removeChild(oldform);
-    }
-    const form = document.createElement('form');
-    form.classList.add('filters-grid')
-    const filterNames = Object.keys(filters);
-    filterNames.forEach((name) => {
-      form.innerHTML += buildFilterTemplate(name, filters[name].min, filters[name].max, filters[name].step, filters[name].initial);
-    });
-    form.innerHTML += '<div class="controls" id="controls"></div>'
-    const controls = form.querySelector('#controls');
-    controls.appendChild(buildButton('reset', 'Reset', 'reset'));
-    controls.appendChild(buildButton('copy', 'Copy to clipboard'));
-
-    form.querySelectorAll('input')
-        .forEach((input) => input.addEventListener('input', update));
-    form.querySelector('#reset').addEventListener('click', reset);
-    form.querySelector('#copy').addEventListener('click', copyToClipboard);
-    form.querySelectorAll('[data-filter-move-icon]').forEach((icon) => {
-      // TODO: Deregister all drop zones when mouse not over drop handle
-      // icon.removeEventListener('mouseenter', setupDragDropZones) isn't enough due to listeners set up in setupDragDropZones not being deregistered when setupDragDropZones is deregistered.
-      icon.addEventListener('mouseenter', scaleupFilter);
-      icon.addEventListener('mouseenter', setupDrag);
-      icon.addEventListener('mouseenter', setupDragDropZones);
-      icon.addEventListener('mouseleave', undoFilterScaleup);
-      icon.addEventListener('mouseleave', (e) => {
-        icon.removeEventListener('mouseenter', setupDrag);
-        icon.removeEventListener('mouseenter', setupDragDropZones);
+  const setupDragDropZones = () => {
+    // const draggableFilters = doc.querySelectorAll('.filter[draggable="true"]');
+    // draggableFilters.forEach((draggableFilter) => {
+    //   draggableFilter.addEventListener('dragstart', (e) => {
+    //     e.dataTransfer.setData('text/plain', e.target.id);
+    //     e.dataTransfer.dropEffect = 'move';
+    //   });
+    // });
+    const dropZones = doc.querySelectorAll('[data-filter-drop-zone]');
+    dropZones.forEach((dropZone) => {
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
       });
-    });
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const data = e.dataTransfer.getData('text/plain');
+        const element = data !== '' ? doc.querySelector(`#${data}`) : null;
+        if (element) {
+          if (dropZone.nextElementSibling) {
+            dropZone.parentElement.insertBefore(doc.getElementById(data), dropZone.nextElementSibling);
+          } else {
+            dropZone.parentElement.appendChild(doc.getElementById(data));
+          }
+        }
+        update();
+      });
 
-    doc.querySelector('#filters').insertBefore(form, doc.querySelector('#filtersRider'));
-    // setupDragDropZones();
+    });
   };
+
+  // DRAG IMAGE
 
   const processImageFile = (file) => {
     if (!file) {
@@ -250,38 +292,6 @@
     const dropZone = doc.querySelector('#imageDropZone');
     dropZone.addEventListener('dragover', handDragOver);
     dropZone.addEventListener('drop', handleFileDrop, false);
-  };
-
-  const setupDragDropZones = () => {
-    // const draggableFilters = doc.querySelectorAll('.filter[draggable="true"]');
-    // draggableFilters.forEach((draggableFilter) => {
-    //   draggableFilter.addEventListener('dragstart', (e) => {
-    //     e.dataTransfer.setData('text/plain', e.target.id);
-    //     e.dataTransfer.dropEffect = 'move';
-    //   });
-    // });
-    const dropZones = doc.querySelectorAll('[data-filter-drop-zone]');
-    dropZones.forEach((dropZone) => {
-      dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-      });
-      dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const data = e.dataTransfer.getData('text/plain');
-        const element = data !== '' ? doc.querySelector(`#${data}`) : null;
-        if (element) {
-          if (dropZone.nextElementSibling) {
-            dropZone.parentElement.insertBefore(doc.getElementById(data), dropZone.nextElementSibling);
-          } else {
-            dropZone.parentElement.appendChild(doc.getElementById(data));
-          }
-        }
-        update();
-      });
-
-    });
   };
 
   window.addEventListener('DOMContentLoaded', () => {
