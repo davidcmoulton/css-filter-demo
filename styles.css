@@ -119,9 +119,9 @@ p {
     box-shadow var(--transition-duration) var(--timing-function);
 }
 
-.filter:hover {
-  /*box-shadow: 2px 2px 2px 2px var(--color-brand-semi);*/
-}
+/* .filter:hover {
+  box-shadow: 2px 2px 2px 2px var(--color-brand-semi);
+} */
 
 .filter.active .filter__slider {
   background-color: var(--color-brand-light-1);
@@ -162,7 +162,7 @@ p {
 }
 
 
-.filter__drag_handle {
+/* .filter__drag_handle {
   height: 100%;
   padding: 9px 4px 6px 0;
   cursor: grab;
@@ -170,7 +170,7 @@ p {
 
 .filter__drag_handle:hover [data-filter-move-icon] {
   fill: wheat;
-}
+} */
 
 .filter__slider {
   padding: 0 12px;

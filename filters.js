@@ -74,13 +74,13 @@
 // RENDERING
 
   const buildFilterTemplate = (name, min, max, step, initial) => `
-    <fieldset class="filter" draggable="true" id="filter_${name}" data-filter-drop-zone>
+    <fieldset class="filter" id="filter_${name}">
     <div class="filter__toggle">
       <input type="checkbox" class="visually-hidden" name="filters" id="${name}" value="on" />
       <label class="filter__label" for="${name}">${name}(<output id="magnitudeReporter_${name}"></output>)</label>
-      <div class="filter__drag_handle">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" data-filter-move-icon><path d="M0 0h24v24H0z" fill="none"/><path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"/></svg>
-      </div>
+      <!-- div class="filter__drag_handle" -->
+        <!-- svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" data-filter-move-icon><path d="M0 0h24v24H0z" fill="none"/><path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"/></svg -->
+      <!-- /div -->
     </div>
     <div class="filter__slider">
       <label for="magnitude_${name}" class="visually-hidden">Magnitude:</label>
@@ -100,13 +100,13 @@
     return button;
   }
 
-  const scaleupFilter = (e) => {
-    e.target.closest('.filter').classList.add('scale');
-  };
+  // const scaleupFilter = (e) => {
+  //   e.target.closest('.filter').classList.add('scale');
+  // };
 
-  const undoFilterScaleup = (e) => {
-    e.target.closest('.filter').classList.remove('scale');
-  };
+  // const undoFilterScaleup = (e) => {
+  //   e.target.closest('.filter').classList.remove('scale');
+  // };
 
   const buildForm = () => {
     const oldform = doc.querySelector('form.filters-grid');
@@ -128,21 +128,12 @@
         .forEach((input) => input.addEventListener('input', update));
     form.querySelector('#reset').addEventListener('click', reset);
     form.querySelector('#copy').addEventListener('click', copyToClipboard);
-    form.querySelectorAll('[data-filter-move-icon]').forEach((icon) => {
-      // TODO: Deregister all drop zones when mouse not over drop handle
-      // icon.removeEventListener('mouseenter', setupDragDropZones) isn't enough due to listeners set up in setupDragDropZones not being deregistered when setupDragDropZones is deregistered.
-      icon.addEventListener('mouseenter', scaleupFilter);
-      icon.addEventListener('mouseenter', setupDrag);
-      icon.addEventListener('mouseenter', setupDragDropZones);
-      icon.addEventListener('mouseleave', undoFilterScaleup);
-      icon.addEventListener('mouseleave', (e) => {
-        icon.removeEventListener('mouseenter', setupDrag);
-        icon.removeEventListener('mouseenter', setupDragDropZones);
-      });
-    });
+    // form.querySelectorAll('[data-filter-move-icon]').rEach((icon) => {
+    //   icon.addEventListener('mouseenter', scaleupFilter);
+    //   icon.addEventListener('mouseleave', undoFilterScaleup);
+    // });
 
     doc.querySelector('#filters').insertBefore(form, doc.querySelector('#filtersRider'));
-    // setupDragDropZones();
   };
 
   // FILTER BEHAVIOUR
@@ -212,49 +203,6 @@
     const copyButton = doc.querySelector('#copy');
     copyButton.innerHTML = 'Copied!'
     copyButton.setAttribute('disabled', 'disabled');
-  };
-
-  // DRAG FILTERS
-
-  const setupDrag = (e) => {
-    const userFilter = e.target.closest('.filter');
-    userFilter.classList.add('scale');
-    userFilter.addEventListener('dragstart', (e) => {
-      e.dataTransfer.setData('text/plain',userFilter.getAttribute('id'));
-      e.dataTransfer.dropEffect = 'move';
-    });
-  };
-
-  const setupDragDropZones = () => {
-    // const draggableFilters = doc.querySelectorAll('.filter[draggable="true"]');
-    // draggableFilters.forEach((draggableFilter) => {
-    //   draggableFilter.addEventListener('dragstart', (e) => {
-    //     e.dataTransfer.setData('text/plain', e.target.id);
-    //     e.dataTransfer.dropEffect = 'move';
-    //   });
-    // });
-    const dropZones = doc.querySelectorAll('[data-filter-drop-zone]');
-    dropZones.forEach((dropZone) => {
-      dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-      });
-      dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const data = e.dataTransfer.getData('text/plain');
-        const element = data !== '' ? doc.querySelector(`#${data}`) : null;
-        if (element) {
-          if (dropZone.nextElementSibling) {
-            dropZone.parentElement.insertBefore(doc.getElementById(data), dropZone.nextElementSibling);
-          } else {
-            dropZone.parentElement.appendChild(doc.getElementById(data));
-          }
-        }
-        update();
-      });
-
-    });
   };
 
   // DRAG IMAGE
