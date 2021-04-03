@@ -249,4 +249,13 @@
     update();
   });
 
+
+// Drag and drop filters:
+// - only become draggable when the drag handle is grabbed
+// - indicate draggability with affordance when the drag handle is hovered over
+// - indicate the drag has started with affordance when the drag handle is grabbed
+// - indicate with affordance the target filter that the dragged filter will displace, when a drop would cause such displacement
+// - dragging filter A onto filter B: filter A displaces filter B, pushing filter B down one position in the list
+// - consider a transient indication of the changed order for sustaining context
+
 })(window);
