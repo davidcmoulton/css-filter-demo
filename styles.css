@@ -196,7 +196,7 @@ p {
   display: flex;
   align-items: center;
   height: 48px;
-  border: 3px solid var(--color-brand-light-1);
+  border: 3px solid var(--color-brand-light-2);
   border-bottom-left-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
   border-top-width: 0;
