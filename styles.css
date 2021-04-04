@@ -167,11 +167,16 @@ p {
   cursor: grab;
 }
 
-.filter__drag_handle:hover,
-.filter__drag_handle:active,
-.filter__drag_handle:focus,
-.filter__drag_handle:focus-within {
+/* .filter__drag_handle:hover, */
+/* .filter__drag_handle:focus, */
+.filter__drag_handle:focus.filter__drag_handle:hover {
   background-color: inherit;
+  border-style: none;
+  outline: none;
+}
+
+.filter__drag_handle:focus:not(.filter__drag_handle:hover) {
+  background-color: transparent;
   border-style: none;
   outline: none;
 }
