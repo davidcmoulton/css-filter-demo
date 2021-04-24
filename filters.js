@@ -78,9 +78,6 @@
     <div class="filter__toggle">
       <input type="checkbox" class="visually-hidden" name="filters" id="${name}" value="on" />
       <label class="filter__label" for="${name}">${name}(<output id="magnitudeReporter_${name}"></output>)</label>
-      <!-- div class="filter__drag_handle" -->
-        <!-- svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" data-filter-move-icon><path d="M0 0h24v24H0z" fill="none"/><path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"/></svg -->
-      <!-- /div -->
     </div>
     <div class="filter__slider">
       <label for="magnitude_${name}" class="visually-hidden">Magnitude:</label>
@@ -99,14 +96,6 @@
     button.innerHTML = text;
     return button;
   }
-
-  // const scaleupFilter = (e) => {
-  //   e.target.closest('.filter').classList.add('scale');
-  // };
-
-  // const undoFilterScaleup = (e) => {
-  //   e.target.closest('.filter').classList.remove('scale');
-  // };
 
   const buildForm = () => {
     const oldform = doc.querySelector('form.filters-grid');
@@ -128,10 +117,6 @@
         .forEach((input) => input.addEventListener('input', update));
     form.querySelector('#reset').addEventListener('click', reset);
     form.querySelector('#copy').addEventListener('click', copyToClipboard);
-    // form.querySelectorAll('[data-filter-move-icon]').rEach((icon) => {
-    //   icon.addEventListener('mouseenter', scaleupFilter);
-    //   icon.addEventListener('mouseleave', undoFilterScaleup);
-    // });
 
     doc.querySelector('#filters').insertBefore(form, doc.querySelector('#filtersRider'));
   };

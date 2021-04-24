@@ -157,17 +157,6 @@ p {
   color: wheat;
 }
 
-
-/* .filter__drag_handle {
-  height: 100%;
-  padding: 9px 4px 6px 0;
-  cursor: grab;
-}
-
-.filter__drag_handle:hover [data-filter-move-icon] {
-  fill: wheat;
-} */
-
 .filter__slider {
   padding: 0 12px;
   display: flex;
