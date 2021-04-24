@@ -96,11 +96,15 @@
     return button;
   }
 
-  const buildForm = (image) => {
+  const deleteOldForm = () => {
     const oldform = doc.querySelector('form.filters-grid');
     if (oldform) {
       oldform.parentElement.removeChild(oldform);
     }
+  };
+
+  const buildForm = (image) => {
+    deleteOldForm();
     const form = document.createElement('form');
     form.classList.add('filters-grid')
     const filterNames = Object.keys(filters);
@@ -167,12 +171,11 @@
     const copyButton = doc.querySelector('#copy');
     const summary = doc.querySelector('#summary');
     if (isNonDefaultFilterApplied(image)) {
-      imageWrapper.classList.add('active');
       controls.classList.remove('hidden');
       summary.classList.remove('hidden');
-      copyButton.innerHTML = 'Copy to clipboard'
+      imageWrapper.classList.add('active');
+      copyButton.innerHTML = 'Copy filters to clipboard'
       copyButton.removeAttribute('disabled');
-      doc.querySelector('#copy').classList.remove('hidden')
       printFilters(image);
     } else {
       imageWrapper.classList.remove('active');
