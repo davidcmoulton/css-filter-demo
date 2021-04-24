@@ -169,9 +169,11 @@
       copyButton.innerHTML = 'Copy to clipboard'
       copyButton.removeAttribute('disabled');
       doc.querySelector('#copy').classList.remove('hidden')
+      printFilters(image);
     } else {
       imageWrapper.classList.remove('active');
       copyButton.classList.add('hidden');
+      clearPrintedFilters();
     }
   };
 
@@ -188,6 +190,14 @@
     const copyButton = doc.querySelector('#copy');
     copyButton.innerHTML = 'Copied!'
     copyButton.setAttribute('disabled', 'disabled');
+  };
+
+  const printFilters = (image) => {
+    doc.querySelector('#filtersOutput').innerHTML = `filter: ${image.style.filter};`;
+  };
+
+  const clearPrintedFilters = (image) => {
+    doc.querySelector('#filtersOutput').innerHTML = '';
   };
 
   // DRAG IMAGE
