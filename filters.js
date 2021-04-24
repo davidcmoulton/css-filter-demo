@@ -163,16 +163,21 @@
       const name = userFilter.getAttribute('id').substring(7);
       setFilter(image, name, filters[name].unit);
     });
+    const controls = doc.querySelector('#controls');
     const copyButton = doc.querySelector('#copy');
+    const summary = doc.querySelector('#summary');
     if (isNonDefaultFilterApplied(image)) {
       imageWrapper.classList.add('active');
+      controls.classList.remove('hidden');
+      summary.classList.remove('hidden');
       copyButton.innerHTML = 'Copy to clipboard'
       copyButton.removeAttribute('disabled');
       doc.querySelector('#copy').classList.remove('hidden')
       printFilters(image);
     } else {
       imageWrapper.classList.remove('active');
-      copyButton.classList.add('hidden');
+      controls.classList.add('hidden');
+      summary.classList.add('hidden');
       clearPrintedFilters();
     }
     updateCanvas(image);
@@ -243,7 +248,6 @@
     doc.querySelector('#imageDropZone').appendChild(image);
   }
   
-  // TODO: resize when layout changes to match image resize
   const sizeCanvasToImage = (image, canvas) => {
     canvas.width = image.naturalWidth || image.width;
     canvas.height = image.naturalHeight || image.height;
@@ -301,7 +305,6 @@
 
       setupImageSelection(image);
       setupImageDropZone(image);
-      // setupImageDownload();
       setupCanvas(image);
 
       update(image);
