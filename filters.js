@@ -71,19 +71,58 @@
 
 // RENDERING
 
-  const buildFilterTemplate = (name, min, max, step, initial) => `
-    <fieldset class="filter" id="filter_${name}">
-    <div class="filter__toggle">
-      <input type="checkbox" class="visually-hidden" name="filters" id="${name}" value="on" />
-      <label class="filter__label" for="${name}">${name}(<output id="magnitudeReporter_${name}"></output>)</label>
-    </div>
-    <div class="filter__slider">
-      <label for="magnitude_${name}" class="visually-hidden">Magnitude:</label>
-      <input type="range" min="${min}" max="${max}" step="${step}" id="magnitude_${name}" value="${initial}" disabled/>
-    </div>
-  </fieldset>
+  const buildFilterTemplate = (name, min, max, step, initial) => {
+    
+    const filter = doc.createElement('fieldset');
+    filter.classList.add('filter');
+    filter.setAttribute('id', `filter_${name}`);
 
-`;
+    const toggle = doc.createElement('div');
+    toggle.classList.add('filter__toggle');
+    filter.appendChild(toggle);
+
+    const input = doc.createElement('input');
+    input.setAttribute('id', name);
+    input.setAttribute('type', 'checkbox');
+    input.setAttribute('name', 'filters');
+    input.setAttribute('value', 'on');
+    input.classList.add('visually-hidden');
+    toggle.appendChild(input);
+
+    const userFilterLabel = doc.createElement('label');
+    userFilterLabel.setAttribute('for', name);
+    userFilterLabel.classList.add('filter__label');
+    toggle.appendChild(userFilterLabel);
+
+    const magnitudeReporter = doc.createElement('output');
+    magnitudeReporter.setAttribute('id', `magnitudeReporter_${name}`);
+    
+    userFilterLabel.appendChild(doc.createTextNode(`${name}(`));
+    userFilterLabel.appendChild(magnitudeReporter);
+    userFilterLabel.appendChild(doc.createTextNode(')'));
+
+    const slider = doc.createElement('div');
+    slider.classList.add('filter__slider');
+    filter.appendChild(slider);
+
+    const magnitudeLabel = doc.createElement('label');
+    magnitudeLabel.setAttribute('for', `magnitude_${name}`);
+    magnitudeLabel.classList.add('visually-hidden');
+    magnitudeLabel.innerHTML = 'Magnitude:';
+    slider.appendChild(magnitudeLabel);
+
+    const magnitude = doc.createElement('input');
+    magnitude.setAttribute('disabled', 'disabled');
+    magnitude.setAttribute('type', 'range');
+    magnitude.setAttribute('id', `magnitude_${name}`);
+    magnitude.setAttribute('min', min);
+    magnitude.setAttribute('max', max);
+    magnitude.setAttribute('step', step);
+    magnitude.setAttribute('value', initial);
+    slider.appendChild(magnitude);
+
+    return filter;
+  };
 
   const buildButton = (id, text, type) => {
     const button = document.createElement('button');
@@ -120,13 +159,17 @@
   };
 
   const buildForm = (image, filters, canvas) => {
+    
     deleteOldForm();
+    
     const form = document.createElement('form');
     form.classList.add('filters-grid')
+    
     const filterNames = Object.keys(filters);
     filterNames.forEach((name) => {
-      form.innerHTML += buildFilterTemplate(name, filters[name].min, filters[name].max, filters[name].step, filters[name].initial);
+      form.appendChild(buildFilterTemplate(name, filters[name].min, filters[name].max, filters[name].step, filters[name].initial));
     });
+    
     form.appendChild(buildControls(image, filters, canvas));
 
     form.querySelectorAll('input')
