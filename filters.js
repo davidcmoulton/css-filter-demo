@@ -1,6 +1,5 @@
 (function (window) {
   const doc = window.document;
-  const image = doc.querySelector('#sampleImage');
   const imageWrapper = doc.querySelector('.image-wrapper');
 
   // DATA
@@ -97,7 +96,7 @@
     return button;
   }
 
-  const buildForm = () => {
+  const buildForm = (image) => {
     const oldform = doc.querySelector('form.filters-grid');
     if (oldform) {
       oldform.parentElement.removeChild(oldform);
@@ -114,16 +113,16 @@
     controls.appendChild(buildButton('copy', 'Copy to clipboard'));
 
     form.querySelectorAll('input')
-        .forEach((input) => input.addEventListener('input', update));
-    form.querySelector('#reset').addEventListener('click', reset);
-    form.querySelector('#copy').addEventListener('click', copyToClipboard);
+        .forEach((input) => input.addEventListener('input', () => { update(image); }));
+    form.querySelector('#reset').addEventListener('click', () => { reset(image); });
+    form.querySelector('#copy').addEventListener('click', (e) => { copyToClipboard(e, image); } );
 
     doc.querySelector('#filters').insertBefore(form, doc.querySelector('#filtersRider'));
   };
 
   // FILTER BEHAVIOUR
 
-  const setFilter = (name, unit = '') => {
+  const setFilter = (image, name, unit = '') => {
     const magnitudeElement = doc.querySelector(`#magnitude_${name}`);
     const magnitudeReporter = doc.querySelector(`#magnitudeReporter_${name}`);
     if (doc.querySelector(`#${name}`).checked) {
@@ -141,7 +140,7 @@
     }
   };
 
-  const isNonDefaultFilterApplied = () => {
+  const isNonDefaultFilterApplied = (image) => {
     const appliedFilters = image.style.filter;
     let nonDefaultApplied = false;
     const userFilters = doc.querySelectorAll('.filter');
@@ -156,35 +155,37 @@
     return nonDefaultApplied;
   };
 
-  const update = () => {
+  const update = (image) => {
     image.style.filter = '';
     const userFilterList = doc.querySelectorAll('.filter');
     userFilterList.forEach((userFilter) => {
       const name = userFilter.getAttribute('id').substring(7);
-      setFilter(name, filters[name].unit);
+      setFilter(image, name, filters[name].unit);
     });
     const copyButton = doc.querySelector('#copy');
-    if (isNonDefaultFilterApplied()) {
+    if (isNonDefaultFilterApplied(image)) {
       imageWrapper.classList.add('active');
       copyButton.innerHTML = 'Copy to clipboard'
       copyButton.removeAttribute('disabled');
       doc.querySelector('#copy').classList.remove('hidden')
       printFilters(image);
+      updateCanvas(image);
     } else {
       imageWrapper.classList.remove('active');
       copyButton.classList.add('hidden');
       clearPrintedFilters();
+      updateCanvas(image);
     }
   };
 
-  const reset = () => {
+  const reset = (image) => {
     const form = doc.querySelector('form');
     form.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => checkbox.checked = false);
-    buildForm();
-    update();
+    buildForm(image);
+    update(image);
   };
 
-  const copyToClipboard = (e) => {
+  const copyToClipboard = (e, image) => {
     e.preventDefault();
     navigator.clipboard.writeText(`filter: ${image.style.filter};`);
     const copyButton = doc.querySelector('#copy');
@@ -202,7 +203,7 @@
 
   // DRAG IMAGE
 
-  const processImageFile = (file) => {
+  const processImageFile = (file, image) => {
     if (!file) {
       return;
     }
@@ -213,17 +214,17 @@
     reader.readAsDataURL(file);
   };
 
-  const setupImageSelection = () => {
+  const setupImageSelection = (image) => {
     doc.querySelector('#filePicker').addEventListener('change', (e) => {
-      processImageFile(e.target.files[0]);
+      processImageFile(e.target.files[0], image);
   });
   };
 
-  const setupImageDropZone = () => {
+  const setupImageDropZone = (image) => {
     const handleFileDrop = (e) => {
       e.preventDefault();
       e.stopPropagation();
-      processImageFile(e.dataTransfer.files[0]);
+      processImageFile(e.dataTransfer.files[0], image);
     };
 
     const handDragOver = (e) => {
@@ -237,11 +238,65 @@
     dropZone.addEventListener('drop', handleFileDrop, false);
   };
 
+  const insertImageIntoDom = (image) => {
+    doc.querySelector('#imageDropZone').appendChild(image);
+  }
+  
+  // TODO: resize when layout changes to match image resize
+  const sizeCanvasToImage = (image, canvas) => {
+    canvas.width = image.naturalWidth || image.width;
+    canvas.height = image.naturalHeight || image.height;
+  }
+
+  const copyImageToCanvas = (image, context) => {
+    context.drawImage(image, 0, 0);
+  };
+
+  const applyFilterToCanvas = (context, filter) => {
+    context.filter = filter;
+  }
+
+  const setupCanvas = (image) => {
+    const canvas = doc.createElement('canvas');
+    canvas.setAttribute('id', 'canvas');
+    canvas.classList.add('visually-hidden');
+    doc.querySelector('body').appendChild(canvas);
+  }
+
+  const updateCanvas = (image) => {
+    const canvas = doc.querySelector('#canvas');
+    sizeCanvasToImage(image, canvas);
+
+    const context = canvas.getContext('2d');
+    applyFilterToCanvas(context, image.style.filter);
+    copyImageToCanvas(image, context);
+  };
+
+  const createDefaultImageElement = () => {
+    const image = new Image();
+    image.setAttribute('id', 'sampleImage');
+    image.setAttribute('alt', 'Sample image to which the filters are applied.');
+    return image;
+  }
+
   window.addEventListener('DOMContentLoaded', () => {
-    buildForm();
-    setupImageSelection();
-    setupImageDropZone();
-    update();
+
+    const image = createDefaultImageElement();
+    
+    image.addEventListener('load', () => {
+
+      buildForm(image);
+      insertImageIntoDom(image);
+
+      setupImageSelection(image);
+      setupImageDropZone(image);
+      setupCanvas(image);
+
+      update(image);
+    });
+    
+    image.src = './images/chopper.jpeg';
+
   });
 
 })(window);
