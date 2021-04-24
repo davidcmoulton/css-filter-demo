@@ -1,6 +1,5 @@
 (function (window) {
   const doc = window.document;
-  const imageWrapper = doc.querySelector('.image-wrapper');
 
   // DATA
 
@@ -163,6 +162,7 @@
       const name = userFilter.getAttribute('id').substring(7);
       setFilter(image, name, filters[name].unit);
     });
+    const imageWrapper = doc.querySelector('.image-wrapper');
     const controls = doc.querySelector('#controls');
     const copyButton = doc.querySelector('#copy');
     const summary = doc.querySelector('#summary');
