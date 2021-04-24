@@ -3,7 +3,7 @@
 
   // DATA
 
-  const filters = {
+  const availableFilters = {
     blur: {
       min: 0,
       max: 10,
@@ -103,7 +103,23 @@
     }
   };
 
-  const buildForm = (image) => {
+  const buildControls = (image, filters, canvas) => {
+    const controls = doc.createElement('div');
+    controls.setAttribute('id', 'controls');
+    controls.classList.add('controls');
+
+    const resetButton = buildButton('reset', 'Reset', 'reset');
+    resetButton.addEventListener('click', () => { reset(image, filters, canvas); });
+    controls.appendChild(resetButton);
+    
+    const copyButton = buildButton('copy', 'Copy to clipboard');
+    copyButton.addEventListener('click', (e) => { copyToClipboard(e, image); } );
+    controls.appendChild(copyButton);
+
+    return controls
+  };
+
+  const buildForm = (image, filters, canvas) => {
     deleteOldForm();
     const form = document.createElement('form');
     form.classList.add('filters-grid')
@@ -111,22 +127,17 @@
     filterNames.forEach((name) => {
       form.innerHTML += buildFilterTemplate(name, filters[name].min, filters[name].max, filters[name].step, filters[name].initial);
     });
-    form.innerHTML += '<div class="controls" id="controls"></div>'
-    const controls = form.querySelector('#controls');
-    controls.appendChild(buildButton('reset', 'Reset', 'reset'));
-    controls.appendChild(buildButton('copy', 'Copy to clipboard'));
+    form.appendChild(buildControls(image, filters, canvas));
 
     form.querySelectorAll('input')
-        .forEach((input) => input.addEventListener('input', () => { update(image); }));
-    form.querySelector('#reset').addEventListener('click', () => { reset(image); });
-    form.querySelector('#copy').addEventListener('click', (e) => { copyToClipboard(e, image); } );
+        .forEach((input) => input.addEventListener('input', () => { update(image, filters, canvas); }));
 
     doc.querySelector('#filters').insertBefore(form, doc.querySelector('#filtersRider'));
   };
 
   // FILTER BEHAVIOUR
 
-  const setFilter = (image, name, unit = '') => {
+  const setFilter = (filters, image, name, unit = '') => {
     const magnitudeElement = doc.querySelector(`#magnitude_${name}`);
     const magnitudeReporter = doc.querySelector(`#magnitudeReporter_${name}`);
     if (doc.querySelector(`#${name}`).checked) {
@@ -144,9 +155,10 @@
     }
   };
 
-  const isNonDefaultFilterApplied = (image) => {
+  const isNonDefaultFilterApplied = (image, filters) => {
     const appliedFilters = image.style.filter;
     let nonDefaultApplied = false;
+    // TODO: relate userFilters to where they're built?
     const userFilters = doc.querySelectorAll('.filter');
     userFilters?.forEach((userFilter) => {
       const name = userFilter.getAttribute('id').substring(7);
@@ -184,7 +196,7 @@
     button.removeAttribute('disabled');
   };
 
-  const update = (image) => {
+  const update = (image, filters, canvas) => {
     
     image.style.filter = '';
     
@@ -192,18 +204,17 @@
     
     userFilterList.forEach((userFilter) => {
       const name = userFilter.getAttribute('id').substring(7);
-      setFilter(image, name, filters[name].unit);
+      setFilter(filters, image, name, filters[name].unit);
     });
 
     const imageWrapper = doc.querySelector('.image-wrapper');
     const summary = doc.querySelector('#summary');
     const controls = doc.querySelector('#controls');
-    const copyButton = doc.querySelector('#copy');
     
-    if (isNonDefaultFilterApplied(image)) {
+    if (isNonDefaultFilterApplied(image, filters)) {
       activate(imageWrapper);
       show(summary, controls);
-      resetCopyButton(copyButton);
+      resetCopyButton(doc.querySelector('#copy'));
       printFilters(image);
     } else {
       deactivate(imageWrapper);
@@ -211,15 +222,15 @@
       clearPrintedFilters();
     }
 
-    const canvas = updateCanvas(image);
+    updateCanvas(image, canvas);
     updateImageForDownload(canvas);
   };
 
-  const reset = (image) => {
+  const reset = (image, filters, canvas) => {
     const form = doc.querySelector('form');
     form.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => { checkbox.checked = false; });
-    buildForm(image);
-    update(image);
+    buildForm(image, filters, canvas);
+    update(image, filters);
   };
 
   const copyToClipboard = (e, image) => {
@@ -291,7 +302,7 @@
     context.filter = filter;
   }
 
-  const setupCanvas = () => {
+  const buildCanvas = () => {
     const canvas = doc.createElement('canvas');
     canvas.setAttribute('id', 'canvas');
     canvas.classList.add('visually-hidden');
@@ -299,8 +310,7 @@
     return canvas;
   }
 
-  const updateCanvas = (image) => {
-    const canvas = doc.querySelector('#canvas');
+  const updateCanvas = (image, canvas) => {
     sizeCanvasToImage(image, canvas);
 
     const context = canvas.getContext('2d');
@@ -322,18 +332,18 @@
 
   window.addEventListener('DOMContentLoaded', () => {
 
+    const canvas = buildCanvas();
     const image = createDefaultImageElement();
     
     image.addEventListener('load', () => {
 
-      buildForm(image);
+      buildForm(image, availableFilters, canvas);
       insertImageIntoDom(image);
 
       setupImageSelection(image);
       setupImageDropZone(image);
-      const canvas = setupCanvas();
 
-      update(image);
+      update(image, availableFilters, canvas);
     });
     
     image.src = './images/chopper.jpeg';
