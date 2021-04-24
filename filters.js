@@ -71,54 +71,37 @@
 
 // RENDERING
 
-  const buildFilterTemplate = (name, min, max, step, initial) => {
-    
-    const filter = doc.createElement('fieldset');
-    filter.classList.add('filter');
-    filter.setAttribute('id', `filter_${name}`);
+  const buildElement = (name, attributes, ...classes) => {
+    const element = doc.createElement(name);
+    Object.keys(attributes).forEach((attr) => { element.setAttribute(attr, attributes[attr]); });
+    classes.forEach((cls) => {element.classList.add(cls)});
+    return element;
+  }
 
-    const toggle = doc.createElement('div');
-    toggle.classList.add('filter__toggle');
+  const buildFilterTemplate = (name, min, max, step, value) => {
+    
+    const filter = buildElement('fieldset', { id: `filter_${name}` }, 'filter')
+
+    const toggle = buildElement('div', {}, 'filter__toggle');
     filter.appendChild(toggle);
 
-    const input = doc.createElement('input');
-    input.setAttribute('id', name);
-    input.setAttribute('type', 'checkbox');
-    input.setAttribute('name', 'filters');
-    input.setAttribute('value', 'on');
-    input.classList.add('visually-hidden');
+    const input = buildElement('input', { id: name, type: 'checkbox', name: 'filters', value: 'on' }, 'visually-hidden');
     toggle.appendChild(input);
 
-    const userFilterLabel = doc.createElement('label');
-    userFilterLabel.setAttribute('for', name);
-    userFilterLabel.classList.add('filter__label');
+    const userFilterLabel = buildElement('label', { for: name }, 'filter__label');
+    userFilterLabel.appendChild(doc.createTextNode(`${name}(`));
+    userFilterLabel.appendChild(buildElement('output', { id: `magnitudeReporter_${name}` }));
+    userFilterLabel.appendChild(doc.createTextNode(')'));
     toggle.appendChild(userFilterLabel);
 
-    const magnitudeReporter = doc.createElement('output');
-    magnitudeReporter.setAttribute('id', `magnitudeReporter_${name}`);
-    
-    userFilterLabel.appendChild(doc.createTextNode(`${name}(`));
-    userFilterLabel.appendChild(magnitudeReporter);
-    userFilterLabel.appendChild(doc.createTextNode(')'));
-
-    const slider = doc.createElement('div');
-    slider.classList.add('filter__slider');
+    const slider = buildElement('div', {}, 'filter__slider');
     filter.appendChild(slider);
 
-    const magnitudeLabel = doc.createElement('label');
-    magnitudeLabel.setAttribute('for', `magnitude_${name}`);
-    magnitudeLabel.classList.add('visually-hidden');
+    const magnitudeLabel = buildElement('label', { for: `magnitude_${name}`}, 'visually-hidden');
     magnitudeLabel.innerHTML = 'Magnitude:';
     slider.appendChild(magnitudeLabel);
 
-    const magnitude = doc.createElement('input');
-    magnitude.setAttribute('disabled', 'disabled');
-    magnitude.setAttribute('type', 'range');
-    magnitude.setAttribute('id', `magnitude_${name}`);
-    magnitude.setAttribute('min', min);
-    magnitude.setAttribute('max', max);
-    magnitude.setAttribute('step', step);
-    magnitude.setAttribute('value', initial);
+    const magnitude = buildElement('input', { disabled: 'disabled', type: 'range', id: `magnitude_${name}`, value, min, max, step });
     slider.appendChild(magnitude);
 
     return filter;
