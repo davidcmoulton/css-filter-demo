@@ -81,28 +81,26 @@
   const buildFilterTemplate = (name, min, max, step, value) => {
     
     const filter = buildElement('fieldset', { id: `filter_${name}` }, 'filter')
-
-    const toggle = buildElement('div', {}, 'filter__toggle');
-    filter.appendChild(toggle);
-
-    const input = buildElement('input', { id: name, type: 'checkbox', name: 'filters', value: 'on' }, 'visually-hidden');
-    toggle.appendChild(input);
-
+    
+    const userFilterWrapper = buildElement('div', {}, 'filter__toggle');
     const userFilterLabel = buildElement('label', { for: name }, 'filter__label');
+    const userFilter = buildElement('input', { id: name, type: 'checkbox', name: 'filters', value: 'on' }, 'visually-hidden');
+
+    const magnitudeWrapper = buildElement('div', {}, 'filter__slider');
+    const magnitude = buildElement('input', { disabled: 'disabled', type: 'range', id: `magnitude_${name}`, value, min, max, step });
+    const magnitudeLabel = buildElement('label', { for: `magnitude_${name}`}, 'visually-hidden');
+    magnitudeLabel.innerHTML = 'Magnitude:';
+
+    filter.appendChild(userFilterWrapper);
+    userFilterWrapper.appendChild(userFilter);
+    userFilterWrapper.appendChild(userFilterLabel);
     userFilterLabel.appendChild(doc.createTextNode(`${name}(`));
     userFilterLabel.appendChild(buildElement('output', { id: `magnitudeReporter_${name}` }));
     userFilterLabel.appendChild(doc.createTextNode(')'));
-    toggle.appendChild(userFilterLabel);
 
-    const slider = buildElement('div', {}, 'filter__slider');
-    filter.appendChild(slider);
-
-    const magnitudeLabel = buildElement('label', { for: `magnitude_${name}`}, 'visually-hidden');
-    magnitudeLabel.innerHTML = 'Magnitude:';
-    slider.appendChild(magnitudeLabel);
-
-    const magnitude = buildElement('input', { disabled: 'disabled', type: 'range', id: `magnitude_${name}`, value, min, max, step });
-    slider.appendChild(magnitude);
+    filter.appendChild(magnitudeWrapper);
+    magnitudeWrapper.appendChild(magnitudeLabel);
+    magnitudeWrapper.appendChild(magnitude);
 
     return filter;
   };
