@@ -211,13 +211,13 @@
       clearPrintedFilters();
     }
 
-    updateCanvas(image);
-    updateImageForDownload();
+    const canvas = updateCanvas(image);
+    updateImageForDownload(canvas);
   };
 
   const reset = (image) => {
     const form = doc.querySelector('form');
-    form.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => checkbox.checked = false);
+    form.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => { checkbox.checked = false; });
     buildForm(image);
     update(image);
   };
@@ -225,16 +225,15 @@
   const copyToClipboard = (e, image) => {
     e.preventDefault();
     navigator.clipboard.writeText(`filter: ${image.style.filter};`);
-    const copyButton = e.target;
-    copyButton.innerHTML = 'Copied!'
-    copyButton.setAttribute('disabled', 'disabled');
+    e.target.innerHTML = 'Copied!'
+    e.target.setAttribute('disabled', 'disabled');
   };
 
   const printFilters = (image) => {
     doc.querySelector('#filtersOutput').innerHTML = `filter: ${image.style.filter};`;
   };
 
-  const clearPrintedFilters = (image) => {
+  const clearPrintedFilters = () => {
     doc.querySelector('#filtersOutput').innerHTML = '';
   };
 
@@ -254,7 +253,7 @@
   const setupImageSelection = (image) => {
     doc.querySelector('#filePicker').addEventListener('change', (e) => {
       processImageFile(e.target.files[0], image);
-  });
+    });
   };
 
   const setupImageDropZone = (image) => {
@@ -292,11 +291,12 @@
     context.filter = filter;
   }
 
-  const setupCanvas = (image) => {
+  const setupCanvas = () => {
     const canvas = doc.createElement('canvas');
     canvas.setAttribute('id', 'canvas');
     canvas.classList.add('visually-hidden');
     doc.querySelector('body').appendChild(canvas);
+    return canvas;
   }
 
   const updateCanvas = (image) => {
@@ -306,16 +306,11 @@
     const context = canvas.getContext('2d');
     applyFilterToCanvas(context, image.style.filter);
     copyImageToCanvas(image, context);
+    return canvas;
   };
 
-  const getUrlForCanvasImage = () => {
-    const canvas = doc.querySelector('#canvas');
-    return canvas.toDataURL();
-  };
-
-  const updateImageForDownload = ()=> {
-    const src = getUrlForCanvasImage();
-    doc.querySelector('#imageDownload').href = src;
+  const updateImageForDownload = (canvas) => {
+    doc.querySelector('#imageDownload').href = canvas.toDataURL();
   };
 
   const createDefaultImageElement = () => {
@@ -336,7 +331,7 @@
 
       setupImageSelection(image);
       setupImageDropZone(image);
-      setupCanvas(image);
+      const canvas = setupCanvas();
 
       update(image);
     });
