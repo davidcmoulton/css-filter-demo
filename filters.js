@@ -159,30 +159,58 @@
     return nonDefaultApplied;
   };
 
+  const hide = (...elements) => {
+    elements.forEach((element) => {
+      element.classList.add('hidden');
+    });
+  }
+
+  const show = (...elements) => {
+    elements.forEach((element) => {
+      element.classList.remove('hidden');
+    });
+  }
+
+  const activate = (element) => {
+    element.classList.add('active');
+  }
+
+  const deactivate = (element) => {
+    element.classList.remove('active');
+  }
+
+  const resetCopyButton = (button) => {
+    button.innerHTML = 'Copy filters to clipboard'
+    button.removeAttribute('disabled');
+  };
+
   const update = (image) => {
+    
     image.style.filter = '';
+    
     const userFilterList = doc.querySelectorAll('.filter');
+    
     userFilterList.forEach((userFilter) => {
       const name = userFilter.getAttribute('id').substring(7);
       setFilter(image, name, filters[name].unit);
     });
+
     const imageWrapper = doc.querySelector('.image-wrapper');
+    const summary = doc.querySelector('#summary');
     const controls = doc.querySelector('#controls');
     const copyButton = doc.querySelector('#copy');
-    const summary = doc.querySelector('#summary');
+    
     if (isNonDefaultFilterApplied(image)) {
-      controls.classList.remove('hidden');
-      summary.classList.remove('hidden');
-      imageWrapper.classList.add('active');
-      copyButton.innerHTML = 'Copy filters to clipboard'
-      copyButton.removeAttribute('disabled');
+      activate(imageWrapper);
+      show(summary, controls);
+      resetCopyButton(copyButton);
       printFilters(image);
     } else {
-      imageWrapper.classList.remove('active');
-      controls.classList.add('hidden');
-      summary.classList.add('hidden');
+      deactivate(imageWrapper);
+      hide(summary, controls);
       clearPrintedFilters();
     }
+
     updateCanvas(image);
     updateImageForDownload();
   };
@@ -197,7 +225,7 @@
   const copyToClipboard = (e, image) => {
     e.preventDefault();
     navigator.clipboard.writeText(`filter: ${image.style.filter};`);
-    const copyButton = doc.querySelector('#copy');
+    const copyButton = e.target;
     copyButton.innerHTML = 'Copied!'
     copyButton.setAttribute('disabled', 'disabled');
   };
