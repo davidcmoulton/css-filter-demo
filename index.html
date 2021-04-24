@@ -18,10 +18,12 @@
     <input type="file" id="filePicker" class="file-picker">
   </div>
   <section class="image-section">
-    <div class="image-wrapper" id="imageDropZone">
-      
+    <div class="image-wrapper" id="imageDropZone"></div>
+    
+    <div class="summary">
+      <output id="filtersOutput" class="filters-output"></output>
+      <a href="" download="image" id="imageDownload" class="button image-download">Save</a>
     </div>
-    <output id="filtersOutput" class="filters-output"></output>
   </section>
 
   <section id="filters">
@@ -30,10 +32,6 @@
   </section>
 
 </main>
-
-<!-- <div>
-  <canvas id="canvas" class="canvas"></canvas>
-</div> -->
 
 <script src="filters.js"></script>
 

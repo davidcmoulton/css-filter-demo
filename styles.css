@@ -76,6 +76,7 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 6px;
 }
 
 .image-wrapper img {
@@ -189,7 +190,7 @@ input[type="range"] {
   margin-bottom: 24px;
 }
 
-button {
+.button {
   font-size: 1rem;
   color: white;
   background-color: var(--color-brand);
@@ -199,22 +200,37 @@ button {
   cursor: pointer;
 }
 
-button:hover,
-button[disabled] {
+.button:hover,
+.button[disabled] {
   color: var(--color-brand);
   background-color: white;
 }
 
-button[disabled] {
+.button[disabled] {
   cursor: unset;
 }
 
-.controls button:first-child {
+.controls .button:first-child {
   margin-right: 12px;
 }
-.controls button:last-child {
+.controls .button:last-child {
   width: 10rem;
   margin-left: 12px;
+}
+
+.summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.filters-output {
+  margin-right: 12px;
+}
+
+.image-download {
+  text-decoration: none;
+  display: inline-block;
 }
 
 .hidden {

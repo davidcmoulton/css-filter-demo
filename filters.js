@@ -89,6 +89,7 @@
   const buildButton = (id, text, type) => {
     const button = document.createElement('button');
     button.setAttribute('id', id);
+    button.classList.add('button');
     if (type) {
       button.setAttribute('type', type);
     }
@@ -169,13 +170,13 @@
       copyButton.removeAttribute('disabled');
       doc.querySelector('#copy').classList.remove('hidden')
       printFilters(image);
-      updateCanvas(image);
     } else {
       imageWrapper.classList.remove('active');
       copyButton.classList.add('hidden');
       clearPrintedFilters();
-      updateCanvas(image);
     }
+    updateCanvas(image);
+    updateImageForDownload();
   };
 
   const reset = (image) => {
@@ -272,6 +273,16 @@
     copyImageToCanvas(image, context);
   };
 
+  const getUrlForCanvasImage = () => {
+    const canvas = doc.querySelector('#canvas');
+    return canvas.toDataURL();
+  };
+
+  const updateImageForDownload = ()=> {
+    const src = getUrlForCanvasImage();
+    doc.querySelector('#imageDownload').href = src;
+  };
+
   const createDefaultImageElement = () => {
     const image = new Image();
     image.setAttribute('id', 'sampleImage');
@@ -290,6 +301,7 @@
 
       setupImageSelection(image);
       setupImageDropZone(image);
+      // setupImageDownload();
       setupCanvas(image);
 
       update(image);
