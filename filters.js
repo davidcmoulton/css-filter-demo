@@ -78,21 +78,23 @@
     return element;
   }
 
-  const buildFilterTemplate = (name, min, max, step, value) => {
+  const buildUserFilter = (name, min, max, step, value, image, filters, canvas) => {
     
     const filter = buildElement('fieldset', { id: `filter_${name}` }, 'filter')
     
     const userFilterWrapper = buildElement('div', {}, 'filter__toggle');
     const userFilterLabel = buildElement('label', { for: name }, 'filter__label');
-    const userFilter = buildElement('input', { id: name, type: 'checkbox', name: 'filters', value: 'on' }, 'visually-hidden');
+    const userFilterToggle = buildElement('input', { id: name, type: 'checkbox', name: 'filters', value: 'on' }, 'visually-hidden');
+    userFilterToggle.addEventListener('input', () => { update(image, filters, canvas); })
 
     const magnitudeWrapper = buildElement('div', {}, 'filter__slider');
-    const magnitude = buildElement('input', { disabled: 'disabled', type: 'range', id: `magnitude_${name}`, value, min, max, step });
     const magnitudeLabel = buildElement('label', { for: `magnitude_${name}`}, 'visually-hidden');
+    const magnitude = buildElement('input', { disabled: 'disabled', type: 'range', id: `magnitude_${name}`, value, min, max, step });
     magnitudeLabel.innerHTML = 'Magnitude:';
+    magnitude.addEventListener('input', () => { update(image, filters, canvas); })
 
     filter.appendChild(userFilterWrapper);
-    userFilterWrapper.appendChild(userFilter);
+    userFilterWrapper.appendChild(userFilterToggle);
     userFilterWrapper.appendChild(userFilterLabel);
     userFilterLabel.appendChild(doc.createTextNode(`${name}(`));
     userFilterLabel.appendChild(buildElement('output', { id: `magnitudeReporter_${name}` }));
@@ -106,12 +108,7 @@
   };
 
   const buildButton = (id, text, type) => {
-    const button = document.createElement('button');
-    button.setAttribute('id', id);
-    button.classList.add('button');
-    if (type) {
-      button.setAttribute('type', type);
-    }
+    const button = buildElement('button', { id, type }, 'button');
     button.innerHTML = text;
     return button;
   }
@@ -124,39 +121,37 @@
   };
 
   const buildControls = (image, filters, canvas) => {
-    const controls = doc.createElement('div');
-    controls.setAttribute('id', 'controls');
-    controls.classList.add('controls');
-
+    const controls = buildElement('div', { id: 'controls' }, 'controls');
     const resetButton = buildButton('reset', 'Reset', 'reset');
     resetButton.addEventListener('click', () => { reset(image, filters, canvas); });
-    controls.appendChild(resetButton);
     
-    const copyButton = buildButton('copy', 'Copy to clipboard');
-    copyButton.addEventListener('click', (e) => { copyToClipboard(e, image); } );
+    const copyButton = buildButton('copy', 'Copy to clipboard', 'button');
+    copyButton.addEventListener('click', (e) => { copyToClipboard(e, image); });
+
+    controls.appendChild(resetButton);
     controls.appendChild(copyButton);
 
     return controls
   };
 
+  const addFormToDom = (form) => {
+    doc.querySelector('#filters').insertBefore(form, doc.querySelector('#filtersRider'));
+  }
+
   const buildForm = (image, filters, canvas) => {
     
     deleteOldForm();
     
-    const form = document.createElement('form');
-    form.classList.add('filters-grid')
-    
-    const filterNames = Object.keys(filters);
-    filterNames.forEach((name) => {
-      form.appendChild(buildFilterTemplate(name, filters[name].min, filters[name].max, filters[name].step, filters[name].initial));
+    const form = buildElement('form', {}, 'filters-grid');
+
+    Object.keys(filters).forEach((name) => {
+      const filter = filters[name];
+      form.appendChild(buildUserFilter(name, filter.min, filter.max, filter.step, filter.initial, image, filters, canvas));
     });
     
     form.appendChild(buildControls(image, filters, canvas));
-
-    form.querySelectorAll('input')
-        .forEach((input) => input.addEventListener('input', () => { update(image, filters, canvas); }));
-
-    doc.querySelector('#filters').insertBefore(form, doc.querySelector('#filtersRider'));
+    
+    addFormToDom(form);
   };
 
   // FILTER BEHAVIOUR
@@ -258,7 +253,6 @@
   };
 
   const copyToClipboard = (e, image) => {
-    e.preventDefault();
     navigator.clipboard.writeText(`filter: ${image.style.filter};`);
     e.target.innerHTML = 'Copied!'
     e.target.setAttribute('disabled', 'disabled');
@@ -327,9 +321,7 @@
   }
 
   const buildCanvas = () => {
-    const canvas = doc.createElement('canvas');
-    canvas.setAttribute('id', 'canvas');
-    canvas.classList.add('visually-hidden');
+    const canvas = buildElement('canvas', { id: 'canvas' }, 'visually-hidden');
     doc.querySelector('body').appendChild(canvas);
     return canvas;
   }
@@ -348,10 +340,7 @@
   };
 
   const createDefaultImageElement = () => {
-    const image = new Image();
-    image.setAttribute('id', 'sampleImage');
-    image.setAttribute('alt', 'Sample image to which the filters are applied.');
-    return image;
+    return buildElement('img', { id: 'sampleImage', alt: 'Sample image to which the filters are applied' });
   }
 
   window.addEventListener('DOMContentLoaded', () => {
