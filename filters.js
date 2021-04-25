@@ -336,7 +336,9 @@
   };
 
   const updateImageForDownload = (canvas) => {
-    doc.querySelector('#imageDownload').href = canvas.toDataURL();
+    const downloader = doc.querySelector('#imageDownload');
+    downloader.setAttribute('download', `image_[add-filter-list-here]`)
+    downloader.href = canvas.toDataURL();
   };
 
   const createDefaultImageElement = () => {
