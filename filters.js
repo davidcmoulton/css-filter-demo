@@ -242,7 +242,7 @@
     }
 
     updateCanvas(image, canvas);
-    updateImageForDownload(canvas);
+    updateImageForDownload(image, canvas);
   };
 
   const reset = (image, filters, canvas) => {
@@ -335,15 +335,19 @@
     return canvas;
   };
 
-  const updateImageForDownload = (canvas) => {
+  const updateImageForDownload = (image, canvas) => {
     const downloader = doc.querySelector('#imageDownload');
-    downloader.setAttribute('download', `image_[add-filter-list-here]`)
+    downloader.setAttribute('download', `image--${convertFiltersToFileNameComponent(image.style.filter)}`)
     downloader.href = canvas.toDataURL();
   };
 
   const createDefaultImageElement = () => {
     return buildElement('img', { id: 'sampleImage', alt: 'Sample image to which the filters are applied' });
   }
+
+  const convertFiltersToFileNameComponent = (filters) => (
+    filters.replaceAll('(', '_').replaceAll(')','').replaceAll(' ', '__').replace(';','')
+  );
 
   window.addEventListener('DOMContentLoaded', () => {
 
