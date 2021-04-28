@@ -354,18 +354,43 @@ const availableFilters = {
   const setupFiltersDropZone = (form) => {
 
     const setDraggedOverClass = (e) => {
-      const target = e.target.classList.contains('filter') ? e.target : e.target.closest('.filter');
-      target?.classList.add('is-dragged-over');
+      e.currentTarget.classList.add('is-dragged-over');
     };
 
     const clearDraggedOverClass = (e) => {
-      const target = e.target.classList.contains('filter') ? e.target :  e.target.closest('.filter');
-      target?.classList.remove('is-dragged-over');
+      e.currentTarget.classList.remove('is-dragged-over');
     };
 
     const handleFilterDragStart = (e) => {
+      e.currentTarget.classList.add('drag-origin');
       e.dataTransfer.setData('text/html', e.target);
       e.dataTransfer.effectAllowed = 'move';
+    };
+
+    const handleDragEnter = (e) => {
+      setDraggedOverClass(e);
+    };
+
+    const handleDragExit = (filter) => (e) => {
+      setupDragEnterEvents(filter);
+      clearDraggedOverClass(e);
+    };
+    
+    const handleDragEnd = (filter) => (e) => {
+      handleDragExit(filter)(e);
+      e.currentTarget.classList.remove('drag-origin');
+    };
+
+    const handleDragLeave = (filter) => (e) => {
+      if (e.target.nodeType === doc.ELEMENT_NODE) {
+        clearDraggedOverClass(e);
+        setupDragEnterEvents(filter);
+        }
+    };
+
+    const setupDragEnterEvents = (filter) => {
+      filter.addEventListener('dragenter', handleDragEnter, { once: true });
+      filter.addEventListener('dragover', handleDragEnter, { once: true });
     };
 
     const filters = form.querySelectorAll('.filter');
@@ -373,11 +398,10 @@ const availableFilters = {
     [].forEach.call(filters, (filter) => {
       console.log('filter', filter);
       
-      // TODO: put onto correct events
-      filter.addEventListener('mouseenter', setDraggedOverClass);
-      filter.addEventListener('mouseleave', clearDraggedOverClass);
-
       filter.addEventListener('dragstart', handleFilterDragStart);
+
+      filter.addEventListener('dragleave', handleDragLeave(filter));
+      filter.addEventListener('dragend', handleDragEnd(filter));
     });
     
     // form.on('drag dragstart dragend dragover dragenter dragleave drop', (e) => {

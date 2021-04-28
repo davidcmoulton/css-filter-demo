@@ -318,36 +318,13 @@ input[type="range"] {
   }
 }
 
-.filter.is-dragged-over {
+.filter.is-dragged-over:not(.drag-origin) {
   border: 3px solid var(--color-brand);
-  animation-name: dragged-over;
-  animation-duration: 100ms;
-  animation-delay: 0;
-  animation-timing-function: ease-out;
-  animation-iteration-count: 1;
+  transform: translateY(10px);
 }
 
-.filter.is-dragged-over > .filter__toggle {
+.filter.is-dragged-over:not(.drag-origin) > .filter__toggle {
   border-radius: 0;
   border-color: var(--color-brand);
   background-color: var(--color-brand);
-}
-
-@keyframes dragged-over {
-  
-  0% {
-    transform: translateY(0);
-  }
-  
-  25% {
-    transform: translateY(-5px);
-  }
-
-  75% {
-    transform: translateY(5px);
-  }
-  
-  100% {
-    transform: translateY(0);
-  }
 }
