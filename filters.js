@@ -136,7 +136,7 @@ const availableFilters = {
     doc.querySelector('#filters').insertBefore(form, doc.querySelector('#filtersRider'));
   }
 
-  const buildForm = (image, filters, canvas) => {
+  const buildFiltersForm = (image, filters, canvas) => {
     
     deleteOldForm();
     
@@ -248,7 +248,7 @@ const availableFilters = {
   const reset = (image, filters, canvas) => {
     const form = doc.querySelector('form');
     form.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => { checkbox.checked = false; });
-    buildForm(image, filters, canvas);
+    buildFiltersForm(image, filters, canvas);
     update(image, filters);
   };
 
@@ -353,73 +353,76 @@ const availableFilters = {
   // See https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
   const setupFiltersDropZone = (form) => {
 
-    const setDraggedOverClass = (e) => {
-      e.currentTarget.classList.add('is-dragged-over');
-    };
+    // A dragged over element can't know anything about what's dragged over it, so we do this instead. Hacky, but it does the job.
+    let positionOfCurrentlyDraggedFilter = -1;
 
-    const clearDraggedOverClass = (e) => {
-      e.currentTarget.classList.remove('is-dragged-over');
+    const clearDraggedOverClasses = (e) => {
+      e.currentTarget.classList.remove('is-dragged-over', 'moves-up', 'moves-down');
     };
 
     const handleFilterDragStart = (e) => {
       e.currentTarget.classList.add('drag-origin');
+      // set positionOfCurrentlyDraggedFilter to the sibling position of the dragged over filter
+      positionOfCurrentlyDraggedFilter = [...e.currentTarget.parentNode.children].indexOf(e.currentTarget);
       e.dataTransfer.setData('text/html', e.target);
-      e.dataTransfer.effectAllowed = 'move';
+      // e.dataTransfer.effectAllowed = 'move';
     };
 
     const handleDragEnter = (e) => {
-      setDraggedOverClass(e);
+      // e.dataTransfer.dropEffect = 'move';
+      
+      // Use the translation of the dragged over element to hint at the repositioning that will occur on drop, to whit:
+      //  - visually translate down when the dragged over element would move down in DOM order (occurs when the dragged element currently follows the dragged over element)
+      //  - visually translate up when the dragged over element would move up in DOM order (occurs when the dragged element currently precedes the dragged over element)
+      if (positionOfCurrentlyDraggedFilter < [...e.currentTarget.parentNode.children].indexOf(e.currentTarget)) {
+        e.currentTarget.classList.add('is-dragged-over', 'moves-up');
+      } else if(positionOfCurrentlyDraggedFilter > [...e.currentTarget.parentNode.children].indexOf(e.currentTarget)) {
+        e.currentTarget.classList.add('is-dragged-over', 'moves-down');
+            }
     };
 
     const handleDragExit = (filter) => (e) => {
       setupDragEnterEvents(filter);
-      clearDraggedOverClass(e);
+      clearDraggedOverClasses(e);
     };
     
     const handleDragEnd = (filter) => (e) => {
-      handleDragExit(filter)(e);
+      handleDragExit(e);
       e.currentTarget.classList.remove('drag-origin');
+      positionOfCurrentlyDraggedFilter = -1;
+    };
+
+    const handleDrop = (filter) => (e) => {
+      e.preventDefault();
+      const data = e.dataTransfer.getData('text/html');
+      filter.parentElement.insertBefore(e.currentTarget);
+      console.log(data);
+
+      handleDragEnd(filter)(e);
     };
 
     const handleDragLeave = (filter) => (e) => {
       if (e.target.nodeType === doc.ELEMENT_NODE) {
-        clearDraggedOverClass(e);
+        clearDraggedOverClasses(e);
         setupDragEnterEvents(filter);
         }
     };
 
     const setupDragEnterEvents = (filter) => {
       filter.addEventListener('dragenter', handleDragEnter, { once: true });
-      filter.addEventListener('dragover', handleDragEnter, { once: true });
     };
 
-    const filters = form.querySelectorAll('.filter');
-    console.log('filters', filters);
-    [].forEach.call(filters, (filter) => {
-      console.log('filter', filter);
+    [].forEach.call(form.querySelectorAll('.filter'), (filter) => {
       
       filter.addEventListener('dragstart', handleFilterDragStart);
 
       filter.addEventListener('dragleave', handleDragLeave(filter));
+      
       filter.addEventListener('dragend', handleDragEnd(filter));
+
+      filter.addEventListener('drop', handleDrop(filter));
     });
-    
-    // form.on('drag dragstart dragend dragover dragenter dragleave drop', (e) => {
-    //   e.preventDefault();
-    //   e.stopPropagation();
-    // });
 
-    // form.addEventListener('dragover dragenter', function() {
-    //   form.addClass('is-dragover');
-    // })
-    
-    // form.on('dragleave dragend drop', function() {
-    //   $form.removeClass('is-dragover');
-    // })
-
-    // form.on('drop', function(e) {
-    //   // process drop
-    // });
   };
 
   window.addEventListener('DOMContentLoaded', () => {
@@ -434,7 +437,7 @@ const availableFilters = {
       setupImageDropZone(image);
 
       const canvas = buildCanvas();      
-      setupFiltersDropZone(buildForm(image, availableFilters, canvas));
+      setupFiltersDropZone(buildFiltersForm(image, availableFilters, canvas));
 
       update(image, availableFilters, canvas);
     });

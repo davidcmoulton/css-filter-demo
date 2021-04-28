@@ -320,11 +320,18 @@ input[type="range"] {
 
 .filter.is-dragged-over:not(.drag-origin) {
   border: 3px solid var(--color-brand);
-  transform: translateY(10px);
 }
 
 .filter.is-dragged-over:not(.drag-origin) > .filter__toggle {
   border-radius: 0;
   border-color: var(--color-brand);
   background-color: var(--color-brand);
+}
+
+.moves-up {
+  transform: translateY(-10px);
+}
+
+.moves-down {
+  transform: translateY(10px);
 }
