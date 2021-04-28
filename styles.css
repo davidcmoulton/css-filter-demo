@@ -114,6 +114,8 @@ p {
   border-width: 0;
   margin: 0;
   padding: 0;
+  border: 3px solid transparent;
+  border-radius: var(--border-radius);
   transition:
     border-color var(--transition-duration) var(--timing-function),
     transform var(--transition-duration) var(--timing-function),
@@ -313,5 +315,39 @@ input[type="range"] {
   .filters-grid {
     padding-left: 24px;
     padding-right: 24px;
+  }
+}
+
+.filter.is-dragged-over {
+  border: 3px solid var(--color-brand);
+  animation-name: dragged-over;
+  animation-duration: 100ms;
+  animation-delay: 0;
+  animation-timing-function: ease-out;
+  animation-iteration-count: 1;
+}
+
+.filter.is-dragged-over > .filter__toggle {
+  border-radius: 0;
+  border-color: var(--color-brand);
+  background-color: var(--color-brand);
+}
+
+@keyframes dragged-over {
+  
+  0% {
+    transform: translateY(0);
+  }
+  
+  25% {
+    transform: translateY(-5px);
+  }
+
+  75% {
+    transform: translateY(5px);
+  }
+  
+  100% {
+    transform: translateY(0);
   }
 }

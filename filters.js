@@ -1,73 +1,71 @@
-(function (window) {
-  const doc = window.document;
-
-  // DATA
-
-  const availableFilters = {
-    blur: {
-      min: 0,
-      max: 10,
-      step: 0.5,
-      unit: 'px',
-      initial: 0,
-    },
-    brightness: {
-      min: 0,
-      max: 200,
-      step: 1,
-      unit: '%',
-      initial: 100,
-    },
-    contrast: {
-      min: 0,
-      max: 200,
-      step: 1,
-      unit: '%',
-      initial: 100,
-    },
-    grayscale: {
-      min: 0,
-      max: 100,
-      step: 1,
-      unit: '%',
-      initial: 0,
-    },
-    'hue-rotate': {
-      min: 0,
-      max: 360,
-      step: 1,
-      unit: 'deg',
-      initial: 0,
-    },
-    invert: {
-      min: 0,
-      max: 100,
-      step: 1,
-      unit: '%',
-      initial: 0,
-    },
-    opacity: {
-      min: 0,
-      max: 100,
-      step: 1,
-      unit: '%',
-      initial: 100,
-    },
-    saturate: {
-      min: 0,
-      max: 200,
-      step: 1,
-      unit: '%',
-      initial: 100,
-    },
-    sepia: {
-      min: 0,
-      max: 100,
-      step: 1,
-      unit: '%',
-      initial: 0,
-    },
+const availableFilters = {
+  blur: {
+    min: 0,
+    max: 10,
+    step: 0.5,
+    unit: 'px',
+    initial: 0,
+  },
+  brightness: {
+    min: 0,
+    max: 200,
+    step: 1,
+    unit: '%',
+    initial: 100,
+  },
+  contrast: {
+    min: 0,
+    max: 200,
+    step: 1,
+    unit: '%',
+    initial: 100,
+  },
+  grayscale: {
+    min: 0,
+    max: 100,
+    step: 1,
+    unit: '%',
+    initial: 0,
+  },
+  'hue-rotate': {
+    min: 0,
+    max: 360,
+    step: 1,
+    unit: 'deg',
+    initial: 0,
+  },
+  invert: {
+    min: 0,
+    max: 100,
+    step: 1,
+    unit: '%',
+    initial: 0,
+  },
+  opacity: {
+    min: 0,
+    max: 100,
+    step: 1,
+    unit: '%',
+    initial: 100,
+  },
+  saturate: {
+    min: 0,
+    max: 200,
+    step: 1,
+    unit: '%',
+    initial: 100,
+  },
+  sepia: {
+    min: 0,
+    max: 100,
+    step: 1,
+    unit: '%',
+    initial: 0,
+  },
 };
+
+(function (window, availableFilters) {
+  const doc = window.document;
 
 // RENDERING
 
@@ -80,8 +78,8 @@
 
   const buildUserFilter = (name, min, max, step, value, image, filters, canvas) => {
     
-    const filter = buildElement('fieldset', { id: `filter_${name}` }, 'filter')
-    
+    const filter = buildElement('fieldset', { id: `filter_${name}`, draggable: 'true' }, 'filter');
+
     const userFilterWrapper = buildElement('div', {}, 'filter__toggle');
     const userFilterLabel = buildElement('label', { for: name }, 'filter__label');
     const userFilterToggle = buildElement('input', { id: name, type: 'checkbox', name: 'filters', value: 'on' }, 'visually-hidden');
@@ -152,6 +150,8 @@
     form.appendChild(buildControls(image, filters, canvas));
     
     addFormToDom(form);
+    
+    return form;
   };
 
   // FILTER BEHAVIOUR
@@ -349,18 +349,68 @@
     filters.replaceAll('(', '_').replaceAll(')','').replaceAll(' ', '__').replace(';','')
   );
 
+  // DRAG AND DROP FILTERS
+  // See https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
+  const setupFiltersDropZone = (form) => {
+
+    const setDraggedOverClass = (e) => {
+      const target = e.target.classList.contains('filter') ? e.target : e.target.closest('.filter');
+      target?.classList.add('is-dragged-over');
+    };
+
+    const clearDraggedOverClass = (e) => {
+      const target = e.target.classList.contains('filter') ? e.target :  e.target.closest('.filter');
+      target?.classList.remove('is-dragged-over');
+    };
+
+    const handleFilterDragStart = (e) => {
+      e.dataTransfer.setData('text/html', e.target);
+      e.dataTransfer.effectAllowed = 'move';
+    };
+
+    const filters = form.querySelectorAll('.filter');
+    console.log('filters', filters);
+    [].forEach.call(filters, (filter) => {
+      console.log('filter', filter);
+      
+      // TODO: put onto correct events
+      filter.addEventListener('mouseenter', setDraggedOverClass);
+      filter.addEventListener('mouseleave', clearDraggedOverClass);
+
+      filter.addEventListener('dragstart', handleFilterDragStart);
+    });
+    
+    // form.on('drag dragstart dragend dragover dragenter dragleave drop', (e) => {
+    //   e.preventDefault();
+    //   e.stopPropagation();
+    // });
+
+    // form.addEventListener('dragover dragenter', function() {
+    //   form.addClass('is-dragover');
+    // })
+    
+    // form.on('dragleave dragend drop', function() {
+    //   $form.removeClass('is-dragover');
+    // })
+
+    // form.on('drop', function(e) {
+    //   // process drop
+    // });
+  };
+
   window.addEventListener('DOMContentLoaded', () => {
 
-    const canvas = buildCanvas();
     const image = createDefaultImageElement();
     
     image.addEventListener('load', () => {
 
-      buildForm(image, availableFilters, canvas);
       insertImageIntoDom(image);
 
       setupImageSelection(image);
       setupImageDropZone(image);
+
+      const canvas = buildCanvas();      
+      setupFiltersDropZone(buildForm(image, availableFilters, canvas));
 
       update(image, availableFilters, canvas);
     });
@@ -369,4 +419,4 @@
 
   });
 
-})(window);
+})(window, availableFilters);
