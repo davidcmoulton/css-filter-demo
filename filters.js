@@ -401,10 +401,11 @@ const availableFilters = {
     };
 
     const handleDrop = (filter) => (e) => {
+      console.log('inside handleDrop pre screen');
       if (e.target !== e.currentTarget) {
         return;
       }
-      console.log('inside handleDrop');
+      console.log('inside handleDrop post screen');
       e.preventDefault();
       const data = e.dataTransfer.getData('text/html');
       filter.parentElement.insertBefore(e.currentTarget);
