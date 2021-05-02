@@ -322,6 +322,10 @@ input[type="range"] {
   border: 3px solid var(--color-brand);
 }
 
+.filter.is-dragged-over:not(.drag-origin) * {
+  pointer-events: none;
+}
+
 .filter.is-dragged-over:not(.drag-origin) > .filter__toggle {
   border-radius: 0;
   border-color: var(--color-brand);
