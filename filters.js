@@ -361,6 +361,10 @@ const availableFilters = {
     };
 
     const handleFilterDragStart = (e) => {
+      if (e.target !== e.currentTarget) {
+        return;
+      }
+      console.log('inside handleFilterDragStart');
       e.currentTarget.classList.add('drag-origin');
       // set positionOfCurrentlyDraggedFilter to the sibling position of the dragged over filter
       positionOfCurrentlyDraggedFilter = [...e.currentTarget.parentNode.children].indexOf(e.currentTarget);
@@ -369,6 +373,10 @@ const availableFilters = {
     };
 
     const handleDragEnter = (e) => {
+      if (e.target !== e.currentTarget) {
+        return;
+      }
+      console.log('inside handleDragEnter where target is: ', e.target);
       // e.dataTransfer.dropEffect = 'move';
       
       // Use the translation of the dragged over element to hint at the repositioning that will occur on drop, to whit:
@@ -381,18 +389,22 @@ const availableFilters = {
             }
     };
 
-    const handleDragExit = (filter) => (e) => {
+    const handleDragEnd = (filter) => (e) => {
+      if (e.target !== e.currentTarget) {
+        return;
+      }
+      console.log('inside handleDragEnd');
       setupDragEnterEvents(filter);
       clearDraggedOverClasses(e);
-    };
-    
-    const handleDragEnd = (filter) => (e) => {
-      handleDragExit(e);
       e.currentTarget.classList.remove('drag-origin');
       positionOfCurrentlyDraggedFilter = -1;
     };
 
     const handleDrop = (filter) => (e) => {
+      if (e.target !== e.currentTarget) {
+        return;
+      }
+      console.log('inside handleDrop');
       e.preventDefault();
       const data = e.dataTransfer.getData('text/html');
       filter.parentElement.insertBefore(e.currentTarget);
@@ -402,6 +414,10 @@ const availableFilters = {
     };
 
     const handleDragLeave = (filter) => (e) => {
+      if (e.target !== e.currentTarget) {
+        return;
+      }
+      console.log('inside handleDragLeave where target is: ', e.target);
       if (e.target.nodeType === doc.ELEMENT_NODE) {
         clearDraggedOverClasses(e);
         setupDragEnterEvents(filter);
@@ -412,9 +428,11 @@ const availableFilters = {
       filter.addEventListener('dragenter', handleDragEnter, { once: true });
     };
 
-    [].forEach.call(form.querySelectorAll('.filter'), (filter) => {
+    [...form.querySelectorAll('.filter')].forEach((filter) => {
       
       filter.addEventListener('dragstart', handleFilterDragStart);
+
+      setupDragEnterEvents(filter);
 
       filter.addEventListener('dragleave', handleDragLeave(filter));
       
