@@ -351,61 +351,45 @@ const availableFilters = {
 
   // DRAG AND DROP FILTERS
   // See https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
-  const setupFiltersDropZone = (form) => {
+  const setupFiltersDropZones = (form) => {
 
-    // A dragged over element can't know anything about what's dragged over it, so we do this instead. Hacky, but it does the job.
-    let positionOfCurrentlyDraggedFilter = -1;
+    let draggedElement = null;
 
     const clearDraggedOverClasses = (e) => {
       e.currentTarget.classList.remove('is-dragged-over', 'moves-up', 'moves-down');
     };
 
     const handleFilterDragStart = (e) => {
-      if (e.target !== e.currentTarget) {
-        return;
-      }
-      console.log('inside handleFilterDragStart');
-      e.currentTarget.classList.add('drag-origin');
-      // set positionOfCurrentlyDraggedFilter to the sibling position of the dragged over filter
-      positionOfCurrentlyDraggedFilter = [...e.currentTarget.parentNode.children].indexOf(e.currentTarget);
-      e.dataTransfer.setData('text/html', e.target);
-      // e.dataTransfer.effectAllowed = 'move';
+      const filter = e.currentTarget;      
+      e.dataTransfer.setData('text/html', filter.outerHTML);
+      e.dataTransfer.effectAllowed = 'move';
+      draggedElement = filter;
+      
+      filter.classList.add('drag-origin');
     };
 
-    const handleDragEnter = (e) => {
-      if (e.target !== e.currentTarget) {
-        return;
-      }
-      console.log('inside handleDragEnter where target is: ', e.target);
-      // e.dataTransfer.dropEffect = 'move';
+    const handleDragOver = (e) => {
+      e.preventDefault();
       
-      // Use the translation of the dragged over element to hint at the repositioning that will occur on drop, to whit:
-      //  - visually translate down when the dragged over element would move down in DOM order (occurs when the dragged element currently follows the dragged over element)
-      //  - visually translate up when the dragged over element would move up in DOM order (occurs when the dragged element currently precedes the dragged over element)
-      if (positionOfCurrentlyDraggedFilter < [...e.currentTarget.parentNode.children].indexOf(e.currentTarget)) {
+      e.dataTransfer.dropEffect = 'move';
+
+      const targetPositionComparedToDragged = draggedElement.compareDocumentPosition(e.currentTarget)
+      if (targetPositionComparedToDragged & Node.DOCUMENT_POSITION_FOLLOWING) {
         e.currentTarget.classList.add('is-dragged-over', 'moves-up');
-      } else if(positionOfCurrentlyDraggedFilter > [...e.currentTarget.parentNode.children].indexOf(e.currentTarget)) {
+      } else if (targetPositionComparedToDragged & Node.DOCUMENT_POSITION_PRECEDING) {
         e.currentTarget.classList.add('is-dragged-over', 'moves-down');
-            }
+      }
     };
 
     const handleDragEnd = (filter) => (e) => {
-      if (e.target !== e.currentTarget) {
-        return;
-      }
-      console.log('inside handleDragEnd');
-      setupDragEnterEvents(filter);
+      e.preventDefault();
+      setupDragOverEvents(filter);
       clearDraggedOverClasses(e);
       e.currentTarget.classList.remove('drag-origin');
-      positionOfCurrentlyDraggedFilter = -1;
+      draggedElement = null;
     };
 
     const handleDrop = (filter) => (e) => {
-      console.log('inside handleDrop pre screen');
-      if (e.target !== e.currentTarget) {
-        return;
-      }
-      console.log('inside handleDrop post screen');
       e.preventDefault();
       const data = e.dataTransfer.getData('text/html');
       filter.parentElement.insertBefore(e.currentTarget);
@@ -415,25 +399,21 @@ const availableFilters = {
     };
 
     const handleDragLeave = (filter) => (e) => {
-      if (e.target !== e.currentTarget) {
-        return;
-      }
-      console.log('inside handleDragLeave where target is: ', e.target);
       if (e.target.nodeType === doc.ELEMENT_NODE) {
         clearDraggedOverClasses(e);
-        setupDragEnterEvents(filter);
+        setupDragOverEvents(filter);
         }
     };
 
-    const setupDragEnterEvents = (filter) => {
-      filter.addEventListener('dragenter', handleDragEnter, { once: true });
+    const setupDragOverEvents = (filter) => {
+      filter.addEventListener('dragover', handleDragOver, { once: true });
     };
 
     [...form.querySelectorAll('.filter')].forEach((filter) => {
       
       filter.addEventListener('dragstart', handleFilterDragStart);
 
-      setupDragEnterEvents(filter);
+      setupDragOverEvents(filter);
 
       filter.addEventListener('dragleave', handleDragLeave(filter));
       
@@ -456,7 +436,7 @@ const availableFilters = {
       setupImageDropZone(image);
 
       const canvas = buildCanvas();      
-      setupFiltersDropZone(buildFiltersForm(image, availableFilters, canvas));
+      setupFiltersDropZones(buildFiltersForm(image, availableFilters, canvas));
 
       update(image, availableFilters, canvas);
     });
@@ -466,3 +446,9 @@ const availableFilters = {
   });
 
 })(window, availableFilters);
+
+/*
+Probems:
+- need dragover as well as drop event handlers to be legitimate drop targets
+- dragover may need to preventDefault()
+*/
