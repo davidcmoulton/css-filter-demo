@@ -84,6 +84,8 @@ const availableFilters = {
     const userFilterLabel = buildElement('label', { for: name }, 'filter__label');
     const userFilterToggle = buildElement('input', { id: name, type: 'checkbox', name: 'filters', value: 'on' }, 'visually-hidden');
     userFilterToggle.addEventListener('input', () => { update(image, filters, canvas); })
+    const dragHandle = buildElement('button', { type: 'button' }, 'filter__drag_handle');
+    dragHandle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" data-filter-move-icon><path d="M0 0h24v24H0z" fill="none"/><path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"/></svg>';
 
     const magnitudeWrapper = buildElement('div', {}, 'filter__slider');
     const magnitudeLabel = buildElement('label', { for: `magnitude_${name}`}, 'visually-hidden');
@@ -94,6 +96,7 @@ const availableFilters = {
     filter.appendChild(userFilterWrapper);
     userFilterWrapper.appendChild(userFilterToggle);
     userFilterWrapper.appendChild(userFilterLabel);
+    userFilterWrapper.appendChild(dragHandle);
     userFilterLabel.appendChild(doc.createTextNode(`${name}(`));
     userFilterLabel.appendChild(buildElement('output', { id: `magnitudeReporter_${name}` }));
     userFilterLabel.appendChild(doc.createTextNode(')'));
@@ -160,16 +163,16 @@ const availableFilters = {
     const magnitudeElement = doc.querySelector(`#magnitude_${name}`);
     const magnitudeReporter = doc.querySelector(`#magnitudeReporter_${name}`);
     if (doc.querySelector(`#${name}`).checked) {
-      const magnitude = `${magnitudeElement.value}${unit}`;
-      magnitudeReporter.innerHTML = magnitude;
       magnitudeElement.removeAttribute('disabled');
-      magnitudeElement.closest('.filter').classList.add('active');
+      activate(magnitudeElement.closest('.filter'));
+      const magnitude = `${magnitudeElement.value}${unit}`;
       image.style.filter += `${name}(${magnitude}`;
+      magnitudeReporter.innerHTML = magnitude;
     } else {
+      magnitudeElement.setAttribute('disabled', 'disabled');
+      deactivate(magnitudeElement.closest('.filter'));
       const filterData = filters[name];
       magnitudeElement.value = filterData.initial;
-      magnitudeElement.setAttribute('disabled', 'disabled');
-      magnitudeElement.closest('.filter').classList.remove('active');
       magnitudeReporter.innerHTML = `${filterData.initial}${filterData.unit}`;
     }
   };
