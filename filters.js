@@ -351,17 +351,23 @@ const availableFilters = {
 
   // DRAG AND DROP FILTERS
   // See https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations
-  const setupFiltersDropZones = (form) => {
+  const setupFiltersDropZones = (form, image, filters, canvas) => {
 
     let draggedElement = null;
 
-    const clearDraggedOverClasses = (e) => {
-      e.currentTarget.classList.remove('is-dragged-over', 'moves-up', 'moves-down');
+    const clearDraggedOverClassesFromElement = (element) => {
+      element.classList.remove('is-dragged-over', 'moves-up', 'moves-down');
+    };
+
+    const clearDraggedOverClassesFromAllFilters = () => {
+      [...form.querySelectorAll('.filter')].forEach((filterElement) => {
+        clearDraggedOverClassesFromElement(filterElement);
+      });
     };
 
     const handleFilterDragStart = (e) => {
       const filter = e.currentTarget;      
-      e.dataTransfer.setData('text/html', filter.outerHTML);
+      e.dataTransfer.setData('text/plain', filter.getAttribute('id'));
       e.dataTransfer.effectAllowed = 'move';
       draggedElement = filter;
       
@@ -370,7 +376,9 @@ const availableFilters = {
 
     const handleDragOver = (e) => {
       e.preventDefault();
-      
+    }
+
+    const handleDragEnter = (e) => {
       e.dataTransfer.dropEffect = 'move';
 
       const targetPositionComparedToDragged = draggedElement.compareDocumentPosition(e.currentTarget)
@@ -382,38 +390,33 @@ const availableFilters = {
     };
 
     const handleDragEnd = (filter) => (e) => {
-      e.preventDefault();
-      setupDragOverEvents(filter);
-      clearDraggedOverClasses(e);
-      e.currentTarget.classList.remove('drag-origin');
+      const element = e.currentTarget;
+      element.classList.remove('drag-origin');
       draggedElement = null;
+      clearDraggedOverClassesFromAllFilters();
     };
 
     const handleDrop = (filter) => (e) => {
       e.preventDefault();
-      const data = e.dataTransfer.getData('text/html');
-      filter.parentElement.insertBefore(e.currentTarget);
-      console.log(data);
-
-      handleDragEnd(filter)(e);
+      const dropped = doc.getElementById(e.dataTransfer.getData('text/plain'));
+      filter.parentElement.insertBefore(e.currentTarget, dropped);
+      dropped.classList.remove('move-up', 'move-down', 'is-dragged-over');
+      update(image, filters, canvas);
     };
 
     const handleDragLeave = (filter) => (e) => {
       if (e.target.nodeType === doc.ELEMENT_NODE) {
-        clearDraggedOverClasses(e);
-        setupDragOverEvents(filter);
+        clearDraggedOverClassesFromElement(e.currentTarget);
         }
-    };
-
-    const setupDragOverEvents = (filter) => {
-      filter.addEventListener('dragover', handleDragOver, { once: true });
     };
 
     [...form.querySelectorAll('.filter')].forEach((filter) => {
       
       filter.addEventListener('dragstart', handleFilterDragStart);
 
-      setupDragOverEvents(filter);
+      filter.addEventListener('dragover', handleDragOver);
+      
+      filter.addEventListener('dragenter', handleDragEnter);
 
       filter.addEventListener('dragleave', handleDragLeave(filter));
       
@@ -436,7 +439,8 @@ const availableFilters = {
       setupImageDropZone(image);
 
       const canvas = buildCanvas();      
-      setupFiltersDropZones(buildFiltersForm(image, availableFilters, canvas));
+      const form = buildFiltersForm(image, availableFilters, canvas)
+      setupFiltersDropZones(form, image, availableFilters, canvas);
 
       update(image, availableFilters, canvas);
     });
@@ -446,9 +450,3 @@ const availableFilters = {
   });
 
 })(window, availableFilters);
-
-/*
-Probems:
-- need dragover as well as drop event handlers to be legitimate drop targets
-- dragover may need to preventDefault()
-*/
