@@ -122,6 +122,10 @@ p {
     box-shadow var(--transition-duration) var(--timing-function);
 }
 
+.filter[draggable="true"] {
+  transform: scale(1.1);
+}
+
 .filter.active .filter__slider {
   background-color: var(--color-brand-light-1);
 }
@@ -196,10 +200,6 @@ p {
 .filter__drag_handle:focus [data-filter-move-icon],
 .filter__drag_handle:focus-within [data-filter-move-icon] {
   fill: wheat;
-}
-
-.filter__drag_handle:active [data-filter-move-icon] {
-  transform: scale(1.4);
 }
 
 .filter__slider {
