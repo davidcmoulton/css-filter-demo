@@ -1,3 +1,4 @@
+const defaultImagePath = './images/chopper.jpeg';
 const availableFilters = {
   blur: {
     min: 0,
@@ -64,7 +65,7 @@ const availableFilters = {
   },
 };
 
-(function (window, availableFilters) {
+(function (window, availableFilters, defaultImagePath) {
   const doc = window.document;
 
 // RENDERING
@@ -488,8 +489,8 @@ const availableFilters = {
       update(image, availableFilters, canvas);
     });
     
-    image.src = './images/chopper.jpeg';
+    image.src = defaultImagePath;
 
   });
 
-})(window, availableFilters);
+})(window, availableFilters, defaultImagePath);
