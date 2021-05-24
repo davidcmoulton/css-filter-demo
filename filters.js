@@ -84,6 +84,12 @@ const availableFilters = {
     const userFilterLabel = buildElement('label', { for: name }, 'filter__label');
     const userFilterToggle = buildElement('input', { id: name, type: 'checkbox', name: 'filters', value: 'on' }, 'visually-hidden');
     userFilterToggle.addEventListener('input', () => { update(image, filters, canvas); })
+    userFilterWrapper.addEventListener('keyup', (e) => {
+      if (e.keyCode === 13) {
+        toggleFilter(e.target.closest('.filter'));
+      }
+    }, true);
+
     const dragHandle = buildElement('button', { type: 'button' }, 'filter__drag_handle');
     dragHandle.addEventListener('mousedown', () => { filter.setAttribute('draggable', 'true') });
     dragHandle.addEventListener('mouseup', () => { filter.removeAttribute('draggable') });
@@ -164,15 +170,14 @@ const availableFilters = {
   const setFilter = (filters, image, name, unit = '') => {
     const magnitudeElement = doc.querySelector(`#magnitude_${name}`);
     const magnitudeReporter = doc.querySelector(`#magnitudeReporter_${name}`);
+    const filterElement = magnitudeElement.closest('.filter');
     if (doc.querySelector(`#${name}`).checked) {
-      magnitudeElement.removeAttribute('disabled');
-      activate(magnitudeElement.closest('.filter'));
+      turnOnFilter(filterElement)
       const magnitude = `${magnitudeElement.value}${unit}`;
       image.style.filter += `${name}(${magnitude}`;
       magnitudeReporter.innerHTML = magnitude;
     } else {
-      magnitudeElement.setAttribute('disabled', 'disabled');
-      deactivate(magnitudeElement.closest('.filter'));
+      turnOffFilter(filterElement)
       const filterData = filters[name];
       magnitudeElement.value = filterData.initial;
       magnitudeReporter.innerHTML = `${filterData.initial}${filterData.unit}`;
@@ -206,6 +211,32 @@ const availableFilters = {
       element.classList.remove('hidden');
     });
   }
+
+  const toggleFilter = (filter) => {
+    if (filter.classList.contains('active')) {
+      turnOffFilter(filter);
+    } else {
+      turnOnFilter(filter);
+    }
+  };
+
+  const turnOnFilter = (filter) => {
+    activate(filter);
+    filter.querySelector('[name="filters"]').checked = true;
+
+    const slider = filter.querySelector('input[type="range"]');
+    slider.removeAttribute('disabled');
+    slider.focus();
+  };
+
+  const turnOffFilter = (filter) => {
+    deactivate(filter);
+    filter.querySelector('[name="filters"]').checked = false;
+
+    const slider = filter.querySelector('input[type="range"]');
+    slider.setAttribute('disabled', 'disabled');
+    slider.blur();
+  };
 
   const activate = (element) => {
     element.classList.add('active');
