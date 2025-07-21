@@ -68,6 +68,20 @@ const availableFilters = {
 (function (window, availableFilters, defaultImagePath) {
   const doc = window.document;
 
+    // Keyboard interaction
+    const handleKeyUp = (e) => {
+      const filter = e.target.closest('.filter');
+      switch (e.keyCode) {
+        case 13:
+          toggleFilter(filter);
+        break;
+        default:
+          e.preventDefault();
+          e.stopPropagation();  
+        break;
+      }
+    };
+
 // RENDERING
 
   const buildElement = (name, attributes, ...classes) => {
@@ -85,11 +99,22 @@ const availableFilters = {
     const userFilterLabel = buildElement('label', { for: name }, 'filter__label');
     const userFilterToggle = buildElement('input', { id: name, type: 'checkbox', name: 'filters', value: 'on' }, 'visually-hidden');
     userFilterToggle.addEventListener('input', () => { update(image, filters, canvas); })
-    userFilterWrapper.addEventListener('keyup', (e) => {
-      if (e.keyCode === 13) {
-        toggleFilter(e.target.closest('.filter'));
+
+    userFilterWrapper.addEventListener('keydown', (e) => {
+      console.log(e.keyCode);
+      console.log(e.target);
+      if (e.keyCode === 38 || e.keyCode === 40) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log();
+        if (e.keyCode === 38) {
+          promoteFilter(e.target.closest('.filter'));
+        } else if (e.keyCode === 40) {
+          demoteFilter(e.target.closest('.filter'));
+        }
       }
     }, true);
+    userFilterWrapper.addEventListener('keyup', handleKeyUp);
 
     const dragHandle = buildElement('button', { type: 'button' }, 'filter__drag_handle');
     dragHandle.addEventListener('mousedown', () => { filter.setAttribute('draggable', 'true') });
@@ -100,7 +125,7 @@ const availableFilters = {
     const magnitudeLabel = buildElement('label', { for: `magnitude_${name}`}, 'visually-hidden');
     const magnitude = buildElement('input', { disabled: 'disabled', type: 'range', id: `magnitude_${name}`, value, min, max, step });
     magnitudeLabel.innerHTML = 'Magnitude:';
-    magnitude.addEventListener('input', () => { update(image, filters, canvas); })
+    magnitude.addEventListener('input', (e) => { update(image, filters, canvas); });
 
     filter.appendChild(userFilterWrapper);
     userFilterWrapper.appendChild(userFilterToggle);
@@ -219,6 +244,25 @@ const availableFilters = {
     } else {
       turnOnFilter(filter);
     }
+  };
+
+  // const calculatePositionWithinSiblings = (element) => {
+  //   let evaluated = element;
+  //   let siblingPosition = 1;
+  //   while(evaluated.previousElementSibling) {
+  //     evaluated = evaluated.previousElementSibling;
+  //     siblingPosition += 1;
+  //   }
+  //   return siblingPosition;
+  // };
+
+  const promoteFilter = (filter) => {
+    // const siblingPosition = calculatePositionWithinSiblings(filter);
+    filter.parentElement.insertBefore(filter, filter.previousElementSibling);
+  };
+
+  const demoteFilter = (filter) => {
+    filter.parentElement.insertBefore(filter, filter.nextElementSibling);
   };
 
   const turnOnFilter = (filter) => {
