@@ -1,4 +1,9 @@
 const defaultImagePath = './images/chopper.jpeg';
+const KEYCODE = {
+  enter: 13,
+  up: 38,
+  down: 40
+};
 const availableFilters = {
   blur: {
     min: 0,
@@ -65,14 +70,14 @@ const availableFilters = {
   },
 };
 
-(function (window, availableFilters, defaultImagePath) {
+(function (window, availableFilters, defaultImagePath, KEYCODE) {
   const doc = window.document;
 
     // Keyboard interaction
-    const handleKeyUp = (e) => {
+    const handleKeyUp = (e, KEYCODE) => {
       const filter = e.target.closest('.filter');
       switch (e.keyCode) {
-        case 13:
+        case KEYCODE.enter:
           toggleFilter(filter);
         break;
         default:
@@ -91,7 +96,7 @@ const availableFilters = {
     return element;
   }
 
-  const buildUserFilter = (name, min, max, step, value, image, filters, canvas) => {
+  const buildUserFilter = (name, min, max, step, value, image, filters, canvas, KEYCODE) => {
     
     const filter = buildElement('fieldset', { id: `filter_${name}` }, 'filter');
 
@@ -103,18 +108,17 @@ const availableFilters = {
     userFilterWrapper.addEventListener('keydown', (e) => {
       console.log(e.keyCode);
       console.log(e.target);
-      if (e.keyCode === 38 || e.keyCode === 40) {
+      if (e.keyCode === KEYCODE.up) {
         e.preventDefault();
         e.stopPropagation();
-        console.log();
-        if (e.keyCode === 38) {
-          promoteFilter(e.target.closest('.filter'));
-        } else if (e.keyCode === 40) {
-          demoteFilter(e.target.closest('.filter'));
-        }
+        promoteFilter(e.target.closest('.filter'));
+      } else if (e.keyCode === KEYCODE.down) {
+        e.preventDefault();
+        e.stopPropagation();
+        demoteFilter(e.target.closest('.filter'));
       }
     }, true);
-    userFilterWrapper.addEventListener('keyup', handleKeyUp);
+    userFilterWrapper.addEventListener('keyup', (e) => handleKeyUp(e, KEYCODE));
 
     const dragHandle = buildElement('button', { type: 'button' }, 'filter__drag_handle');
     dragHandle.addEventListener('mousedown', () => { filter.setAttribute('draggable', 'true') });
@@ -173,7 +177,7 @@ const availableFilters = {
     doc.querySelector('#filters').insertBefore(form, doc.querySelector('#filtersRider'));
   }
 
-  const buildFiltersForm = (image, filters, canvas) => {
+  const buildFiltersForm = (image, filters, canvas, KEYCODE) => {
     
     deleteOldForm();
     
@@ -181,7 +185,7 @@ const availableFilters = {
 
     Object.keys(filters).forEach((name) => {
       const filter = filters[name];
-      form.appendChild(buildUserFilter(name, filter.min, filter.max, filter.step, filter.initial, image, filters, canvas));
+      form.appendChild(buildUserFilter(name, filter.min, filter.max, filter.step, filter.initial, image, filters, canvas, KEYCODE));
     });
     
     form.appendChild(buildControls(image, filters, canvas));
@@ -326,10 +330,10 @@ const availableFilters = {
     updateImageForDownload(image, canvas);
   };
 
-  const reset = (image, filters, canvas) => {
+  const reset = (image, filters, canvas, KEYCODE) => {
     const form = doc.querySelector('form');
     form.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => { checkbox.checked = false; });
-    buildFiltersForm(image, filters, canvas);
+    buildFiltersForm(image, filters, canvas, KEYCODE);
     update(image, filters);
   };
 
@@ -527,7 +531,7 @@ const availableFilters = {
       setupImageDropZone(image);
 
       const canvas = buildCanvas();      
-      const form = buildFiltersForm(image, availableFilters, canvas)
+      const form = buildFiltersForm(image, availableFilters, canvas, KEYCODE)
       setupFiltersDropZones(form, image, availableFilters, canvas);
 
       update(image, availableFilters, canvas);
@@ -537,4 +541,4 @@ const availableFilters = {
 
   });
 
-})(window, availableFilters, defaultImagePath);
+})(window, availableFilters, defaultImagePath, KEYCODE);
