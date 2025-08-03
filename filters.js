@@ -1,3 +1,4 @@
+
 const config = {
   defaultImagePath: './images/chopper.jpeg',
   keyCode: {
@@ -5,75 +6,74 @@ const config = {
     up: 38,
     down: 40
   },
+  availableFilters: {
+    blur: {
+      min: 0,
+      max: 10,
+      step: 0.5,
+      unit: 'px',
+      initial: 0,
+    },
+    brightness: {
+      min: 0,
+      max: 200,
+      step: 1,
+      unit: '%',
+      initial: 100,
+    },
+    contrast: {
+      min: 0,
+      max: 200,
+      step: 1,
+      unit: '%',
+      initial: 100,
+    },
+    grayscale: {
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+      initial: 0,
+    },
+    'hue-rotate': {
+      min: 0,
+      max: 360,
+      step: 1,
+      unit: 'deg',
+      initial: 0,
+    },
+    invert: {
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+      initial: 0,
+    },
+    opacity: {
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+      initial: 100,
+    },
+    saturate: {
+      min: 0,
+      max: 200,
+      step: 1,
+      unit: '%',
+      initial: 100,
+    },
+    sepia: {
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+      initial: 0,
+    },
+  }
 };
 
-const availableFilters = {
-  blur: {
-    min: 0,
-    max: 10,
-    step: 0.5,
-    unit: 'px',
-    initial: 0,
-  },
-  brightness: {
-    min: 0,
-    max: 200,
-    step: 1,
-    unit: '%',
-    initial: 100,
-  },
-  contrast: {
-    min: 0,
-    max: 200,
-    step: 1,
-    unit: '%',
-    initial: 100,
-  },
-  grayscale: {
-    min: 0,
-    max: 100,
-    step: 1,
-    unit: '%',
-    initial: 0,
-  },
-  'hue-rotate': {
-    min: 0,
-    max: 360,
-    step: 1,
-    unit: 'deg',
-    initial: 0,
-  },
-  invert: {
-    min: 0,
-    max: 100,
-    step: 1,
-    unit: '%',
-    initial: 0,
-  },
-  opacity: {
-    min: 0,
-    max: 100,
-    step: 1,
-    unit: '%',
-    initial: 100,
-  },
-  saturate: {
-    min: 0,
-    max: 200,
-    step: 1,
-    unit: '%',
-    initial: 100,
-  },
-  sepia: {
-    min: 0,
-    max: 100,
-    step: 1,
-    unit: '%',
-    initial: 0,
-  },
-};
-
-(function (window, availableFilters, config) {
+(function (window, config) {
   const doc = window.document;
 
     // Keyboard interaction
@@ -534,14 +534,14 @@ const availableFilters = {
       setupImageDropZone(image);
 
       const canvas = buildCanvas();      
-      const form = buildFiltersForm(image, availableFilters, canvas, config.keyCode)
-      setupFiltersDropZones(form, image, availableFilters, canvas);
+      const form = buildFiltersForm(image, config.availableFilters, canvas, config.keyCode)
+      setupFiltersDropZones(form, image, config.availableFilters, canvas);
 
-      update(image, availableFilters, canvas);
+      update(image, config.availableFilters, canvas);
     });
     
     image.src = config.defaultImagePath;
 
   });
 
-})(window, availableFilters, config);
+})(window, config);
