@@ -1,5 +1,5 @@
-const defaultImagePath = './images/chopper.jpeg';
 const config = {
+  defaultImagePath: './images/chopper.jpeg',
   keyCode: {
     enter: 13,
     up: 38,
@@ -73,7 +73,7 @@ const availableFilters = {
   },
 };
 
-(function (window, availableFilters, defaultImagePath, config) {
+(function (window, availableFilters, config) {
   const doc = window.document;
 
     // Keyboard interaction
@@ -540,8 +540,8 @@ const availableFilters = {
       update(image, availableFilters, canvas);
     });
     
-    image.src = defaultImagePath;
+    image.src = config.defaultImagePath;
 
   });
 
-})(window, availableFilters, defaultImagePath, config);
+})(window, availableFilters, config);
