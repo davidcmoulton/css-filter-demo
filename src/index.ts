@@ -154,7 +154,7 @@ import * as render from './render.js';
 
   const setFilter = (filters: Config['availableFilters'], image: HTMLImageElement, name: string, unit: string = '') => {
     const magnitudeElement = document.querySelector(`#magnitude_${name}`) as HTMLInputElement;
-    const filterElement = magnitudeElement?.closest('.filter');
+    const filterElement = magnitudeElement?.closest('.filter') as HTMLElement;
     const magnitudeReporter = document.querySelector(`#magnitudeReporter_${name}`) as HTMLOutputElement;
     const filterToggle = document.querySelector(`#${name}`) as HTMLInputElement;
     if (filterToggle?.checked) {
@@ -236,13 +236,14 @@ import * as render from './render.js';
     }
   };
 
-  const turnOnFilter = (filter) => {
+  const turnOnFilter = (filter: HTMLElement): void => {
     activate(filter);
-    filter.querySelector('[name="filters"]').checked = true;
+    const filterCheckbox = filter.querySelector('[name="filters"]') as HTMLInputElement;
+    filterCheckbox.checked = true;
 
-    const slider = filter.querySelector('input[type="range"]');
-    slider.removeAttribute('disabled');
-    slider.focus();
+    const slider = filter.querySelector('input[type="range"]') as HTMLInputElement;
+    slider?.removeAttribute('disabled');
+    slider?.focus();
   };
 
   const turnOffFilter = (filter) => {
