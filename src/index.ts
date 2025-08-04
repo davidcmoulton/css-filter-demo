@@ -172,17 +172,20 @@ import * as render from './render.js';
     }
   };
 
-  const isNonDefaultFilterApplied = (image, filters) => {
+  const isNonDefaultFilterApplied = (image: HTMLImageElement, filters: Config['availableFilters']): boolean => {
     const appliedFilters = image.style.filter;
     let nonDefaultApplied = false;
+
     // TODO: relate userFilters to where they're built?
     const userFilters = document.querySelectorAll('.filter');
     userFilters?.forEach((userFilter) => {
-      const name = userFilter.getAttribute('id').substring(7);
-      const filter = filters[name];
-      const startingValue = `${name}(${filter.initial}${filter.unit})`
-      if (appliedFilters.includes(name) && !appliedFilters.includes(startingValue)) {
-        nonDefaultApplied = true;
+      const name = userFilter?.getAttribute('id')?.substring(7);
+      if (name !== undefined) {
+        const filter = filters[name];
+        const startingValue = `${name}(${filter?.initial}${filter?.unit})`
+        if (appliedFilters.includes(name) && !appliedFilters.includes(startingValue)) {
+          nonDefaultApplied = true;
+        }
       }
     });
     return nonDefaultApplied;

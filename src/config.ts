@@ -4,7 +4,7 @@ type KeyCode = { [index: string]: number };
 
 type Unit = 'px' | '%' | 'deg';
 
-type FilterProperties = {
+export type FilterProperties = {
   min: number,
   max: number,
   step: number,
