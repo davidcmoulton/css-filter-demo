@@ -1,4 +1,36 @@
-export const config = {
+type DefaultImagePath = string;
+
+type KeyCode = { [index: string]: number };
+
+type Unit = 'px' | '%' | 'deg';
+
+type FilterProperties = {
+  min: number,
+  max: number,
+  step: number,
+  unit: Unit,
+  initial: number,
+};
+
+type AvailableFilters = {
+  blur: FilterProperties,
+  brightness: FilterProperties,
+  contrast: FilterProperties,
+  grayscale: FilterProperties,
+  'hue-rotate': FilterProperties,
+  invert: FilterProperties,
+  opacity: FilterProperties,
+  saturate: FilterProperties,
+  sepia: FilterProperties,
+};
+
+export type Config = {
+  defaultImagePath: DefaultImagePath,
+  keyCode: KeyCode,
+  availableFilters: AvailableFilters
+};
+
+export const config: Config = {
   defaultImagePath: './images/chopper.jpeg',
   keyCode: {
     enter: 13,

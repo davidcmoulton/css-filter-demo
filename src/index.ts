@@ -1,11 +1,11 @@
-import { config } from './config.js';
+import { config, Config } from './config.js';
 import * as render from './render.js';
 
-(function (window, config) {
+(function (window, config: Config) {
   const doc = window.document;
 
     // Keyboard interaction
-    const handleKeyUp = (e, keyCode) => {
+    const handleKeyUp = (e, keyCode: Config['keyCode']) => {
       const filter = e.target.closest('.filter');
       switch (e.keyCode) {
         case keyCode.enter:
