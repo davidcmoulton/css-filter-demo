@@ -19,9 +19,19 @@ import * as render from './render.js';
 
 // RENDERING
 
-  const buildUserFilter = (name: FilterName, min, max, step, value, image: HTMLImageElement, filters, canvas: HTMLCanvasElement, keyCode: Config['keyCode']) => {
+  const buildUserFilter = (
+    name: FilterName,
+    min: number,
+    max: number,
+    step: number,
+    value: number,
+    image: HTMLImageElement,
+    filters: Config['availableFilters'],
+    canvas: HTMLCanvasElement,
+    keyCode: Config['keyCode']
+  ): HTMLFieldSetElement => {
     
-    const filter = render.buildElement('fieldset', { id: `filter_${name}` }, ['filter']);
+    const filter = render.buildElement('fieldset', { id: `filter_${name}` }, ['filter']) as HTMLFieldSetElement;
 
     const userFilterWrapper = render.buildElement('div', {}, ['filter__toggle']);
     const userFilterLabel = render.buildElement('label', { for: name }, ['filter__label']);
