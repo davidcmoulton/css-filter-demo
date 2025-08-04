@@ -73,7 +73,7 @@ import * as render from './render.js';
   type BuildButton = (id: string, text: string, type: 'button' | 'reset') => HTMLButtonElement;
 
   const buildButton: BuildButton = (id, text, type) => {
-    const button = render.buildElement('button', { id, type }, ['button']);
+    const button = render.buildElement('button', { id, type }, ['button']) as HTMLButtonElement;
     button.innerHTML = text;
     return button;
   }
