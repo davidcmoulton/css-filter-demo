@@ -421,8 +421,8 @@ import * as render from './render.js';
     return render.buildElement('img', { id: 'sampleImage', alt: 'Sample image to which the filters are applied' }) as HTMLImageElement;
   }
 
-  const convertFiltersToFileNameComponent = (filters) => (
-    filters.replaceAll('(', '_').replaceAll(')','').replaceAll(' ', '__').replace(';','')
+  const convertFiltersToFileNameComponent = (filtersToApply: string): string => (
+    filtersToApply.replaceAll('(', '_').replaceAll(')','').replaceAll(' ', '__').replace(';','')
   );
 
   // DRAG AND DROP FILTERS
