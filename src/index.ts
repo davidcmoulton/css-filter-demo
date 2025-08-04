@@ -20,7 +20,7 @@ import * as render from './render.js';
 
 // RENDERING
 
-  const buildUserFilter = (name: FilterName, min, max, step, value, image, filters, canvas, keyCode) => {
+  const buildUserFilter = (name: FilterName, min, max, step, value, image: HTMLImageElement, filters, canvas: HTMLCanvasElement, keyCode: Config['keyCode']) => {
     
     const filter = render.buildElement('fieldset', { id: `filter_${name}` }, 'filter');
 
@@ -70,7 +70,9 @@ import * as render from './render.js';
     return filter;
   };
 
-  const buildButton = (id, text, type) => {
+  type BuildButton = (id: string, text: string, type: 'button' | 'reset') => HTMLButtonElement;
+
+  const buildButton: BuildButton = (id, text, type) => {
     const button = render.buildElement('button', { id, type }, 'button');
     button.innerHTML = text;
     return button;
