@@ -223,7 +223,7 @@ import * as render from './render.js';
     element.classList.add('active');
   }
 
-  const deactivate = (element) => {
+  const deactivate = (element: HTMLElement) => {
     element.classList.remove('active');
   }
 
