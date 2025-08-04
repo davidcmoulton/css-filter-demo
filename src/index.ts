@@ -96,8 +96,11 @@ import * as render from './render.js';
     return controls
   };
 
-  const addFormToDom = (form) => {
-    document.querySelector('#filters').insertBefore(form, document.querySelector('#filtersRider'));
+  const addFormToDom = (form: HTMLFormElement) => {
+    const filtersElement = document.querySelector('#filters');
+    if (filtersElement !== null) {
+      filtersElement.insertBefore(form, document.querySelector('#filtersRider'));
+    }
   }
 
   const buildFiltersForm = (image, filters, canvas, keyCode) => {
