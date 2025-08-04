@@ -1,4 +1,4 @@
-import { config, Config, AvailableFilterNames as FilterName } from './config.js';
+import { config, Config } from './config.js';
 import * as render from './render.js';
 
 (function (window, config: Config) {
@@ -20,7 +20,7 @@ import * as render from './render.js';
 // RENDERING
 
   const buildUserFilter = (
-    name: FilterName,
+    name: string,
     min: number,
     max: number,
     step: number,
