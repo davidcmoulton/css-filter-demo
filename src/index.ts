@@ -186,9 +186,12 @@ import * as render from './render.js';
   //   return siblingPosition;
   // };
 
-  const promoteFilter = (filter) => {
+  const promoteFilter = (filter: HTMLFieldSetElement) => {
     // const siblingPosition = calculatePositionWithinSiblings(filter);
-    filter.parentElement.insertBefore(filter, filter.previousElementSibling);
+    const parentElement = filter.parentElement;
+    if (parentElement !== null) {
+      parentElement.insertBefore(filter, filter.previousElementSibling);
+    }
   };
 
   const demoteFilter = (filter) => {
