@@ -152,20 +152,23 @@ import * as render from './render.js';
 
   // FILTER BEHAVIOUR
 
-  const setFilter = (filters, image, name, unit = '') => {
-    const magnitudeElement = document.querySelector(`#magnitude_${name}`);
-    const magnitudeReporter = document.querySelector(`#magnitudeReporter_${name}`);
-    const filterElement = magnitudeElement.closest('.filter');
-    if (document.querySelector(`#${name}`).checked) {
+  const setFilter = (filters: Config['availableFilters'], image: HTMLImageElement, name: string, unit: string = '') => {
+    const magnitudeElement = document.querySelector(`#magnitude_${name}`) as HTMLInputElement;
+    const filterElement = magnitudeElement?.closest('.filter');
+    const magnitudeReporter = document.querySelector(`#magnitudeReporter_${name}`) as HTMLOutputElement;
+    const filterToggle = document.querySelector(`#${name}`) as HTMLInputElement;
+    if (filterToggle?.checked) {
       turnOnFilter(filterElement)
-      const magnitude = `${magnitudeElement.value}${unit}`;
+      const magnitude = `${magnitudeElement?.value}${unit}`;
       image.style.filter += `${name}(${magnitude}`;
-      magnitudeReporter.innerHTML = magnitude;
+      if (magnitudeReporter !== null) {
+        magnitudeReporter.innerHTML = magnitude;
+      }
     } else {
       turnOffFilter(filterElement)
       const filterData = filters[name];
-      magnitudeElement.value = filterData.initial;
-      magnitudeReporter.innerHTML = `${filterData.initial}${filterData.unit}`;
+      magnitudeElement.value = filterData?.initial.toString() ?? '0';
+      magnitudeReporter.innerHTML = `${filterData?.initial}${filterData?.unit}`;
     }
   };
 
