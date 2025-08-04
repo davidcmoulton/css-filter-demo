@@ -194,8 +194,11 @@ import * as render from './render.js';
     }
   };
 
-  const demoteFilter = (filter) => {
-    filter.parentElement.insertBefore(filter, filter.nextElementSibling);
+  const demoteFilter = (filter: HTMLFieldSetElement) => {
+    const parentElement = filter.parentElement;
+    if (parentElement !== null) {
+      parentElement.insertBefore(filter, filter.nextElementSibling);
+    }
   };
 
   const turnOnFilter = (filter) => {
