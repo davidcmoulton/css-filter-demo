@@ -350,8 +350,8 @@ import * as render from './render.js';
     downloader.href = canvas.toDataURL();
   };
 
-  const createDefaultImageElement = () => {
-    return render.buildElement('img', { id: 'sampleImage', alt: 'Sample image to which the filters are applied' }, null);
+  const createDefaultImageElement = (): HTMLImageElement => {
+    return render.buildElement('img', { id: 'sampleImage', alt: 'Sample image to which the filters are applied' }, null) as HTMLImageElement;
   }
 
   const convertFiltersToFileNameComponent = (filters) => (
