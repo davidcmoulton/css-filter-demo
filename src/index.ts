@@ -343,10 +343,12 @@ import * as render from './render.js';
     return canvas;
   };
 
-  const updateImageForDownload = (image, canvas) => {
-    const downloader = document.querySelector('#imageDownload');
-    downloader.setAttribute('download', `image--${convertFiltersToFileNameComponent(image.style.filter)}`)
-    downloader.href = canvas.toDataURL();
+  const updateImageForDownload = (image: HTMLImageElement, canvas: HTMLCanvasElement): void => {
+    const downloader = document.querySelector('#imageDownload') as HTMLAnchorElement;
+    if (downloader !== null) {
+      downloader.setAttribute('download', `image--${convertFiltersToFileNameComponent(image.style.filter)}`)
+      downloader.href = canvas.toDataURL();
+    }
   };
 
   const createDefaultImageElement = (): HTMLImageElement => {
