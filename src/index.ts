@@ -262,11 +262,19 @@ import * as render from './render.js';
     updateImageForDownload(image, canvas);
   };
 
-  const reset = (image, filters, canvas, keyCode) => {
+  const reset = (
+    image: HTMLImageElement,
+    filters: Config['availableFilters'],
+    canvas: HTMLCanvasElement,
+    keyCode: Config['keyCode']
+  ) => {
     const form = document.querySelector('form');
-    form.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => { checkbox.checked = false; });
-    buildFiltersForm(image, filters, canvas, keyCode);
-    update(image, filters);
+    if (form !== null) {
+      const checkboxes: NodeListOf<HTMLInputElement> = form.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach((checkbox) => { checkbox.checked = false; });
+      buildFiltersForm(image, filters, canvas, keyCode);
+      update(image, filters, canvas);
+    }
   };
 
   const copyToClipboard = (e, image) => {
