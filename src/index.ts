@@ -270,8 +270,11 @@ import * as render from './render.js';
     document.querySelector('#filtersOutput').innerHTML = `filter: ${image.style.filter};`;
   };
 
-  const clearPrintedFilters = () => {
-    document.querySelector('#filtersOutput').innerHTML = '';
+  const clearPrintedFilters = (): void => {
+    const filtersOutput = document.querySelector('#filtersOutput');
+    if (filtersOutput !== null) {
+      filtersOutput.innerHTML = '';
+    }
   };
 
   // DRAG IMAGE
