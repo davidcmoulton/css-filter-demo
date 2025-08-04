@@ -328,9 +328,12 @@ import * as render from './render.js';
     context.filter = filter;
   }
 
-  const buildCanvas = () => {
-    const canvas = render.buildElement('canvas', { id: 'canvas' }, ['visually-hidden']);
-    document.querySelector('body').appendChild(canvas);
+  const buildCanvas = (): HTMLCanvasElement => {
+    const canvas = render.buildElement('canvas', { id: 'canvas' }, ['visually-hidden']) as HTMLCanvasElement;
+    const body = document.querySelector('body');
+    if (body !== null) {
+      body.appendChild(canvas);
+    }
     return canvas;
   }
 
