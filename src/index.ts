@@ -107,7 +107,7 @@ import * as render from './render.js';
     
     deleteOldForm();
     
-    const form = render.buildElement('form', {}, ['filters-grid']);
+    const form = render.buildElement('form', {}, ['filters-grid']) as HTMLFormElement;
 
     Object.keys(filters).forEach((name) => {
       const filter = filters[name];
