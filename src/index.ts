@@ -403,7 +403,7 @@ import * as render from './render.js';
   const updateCanvas = (image: HTMLImageElement, canvas: HTMLCanvasElement): HTMLCanvasElement => {
     sizeCanvasToImage(image, canvas);
 
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext('2d') as CanvasRenderingContext2D;
     applyFilterToCanvas(context, image.style.filter);
     copyImageToCanvas(image, context);
     return canvas;
