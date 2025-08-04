@@ -79,10 +79,8 @@ import * as render from './render.js';
   }
 
   const deleteOldForm = () => {
-    const oldform = doc.querySelector('form.filters-grid');
-    if (oldform) {
-      oldform.parentElement.removeChild(oldform);
-    }
+    const oldform: HTMLFormElement | null = doc.querySelector('form.filters-grid');
+    oldform?.parentElement?.removeChild(oldform);
   };
 
   const buildControls = (image, filters, canvas) => {
