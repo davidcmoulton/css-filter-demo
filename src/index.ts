@@ -203,7 +203,7 @@ import * as render from './render.js';
     });
   }
 
-  const toggleFilter = (filter) => {
+  const toggleFilter = (filter: HTMLElement): void => {
     if (filter.classList.contains('active')) {
       turnOffFilter(filter);
     } else {
