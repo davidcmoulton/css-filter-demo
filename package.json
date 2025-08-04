@@ -1,0 +1,9 @@
+{
+  "name": "css-filters-demo",
+  "version": "0.0.5",
+  "description": "View the effects of various CSS filters on an image",
+  "main": "index.js",
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}
