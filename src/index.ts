@@ -227,7 +227,7 @@ import * as render from './render.js';
     element.classList.remove('active');
   }
 
-  const resetCopyButton = (button) => {
+  const resetCopyButton = (button: HTMLButtonElement) => {
     button.innerHTML = 'Copy filters to clipboard'
     button.removeAttribute('disabled');
   };
