@@ -1,4 +1,4 @@
-import { config, Config } from './config.js';
+import { config, Config, AvailableFilterNames as FilterName } from './config.js';
 import * as render from './render.js';
 
 (function (window, config: Config) {
@@ -20,7 +20,7 @@ import * as render from './render.js';
 
 // RENDERING
 
-  const buildUserFilter = (name, min, max, step, value, image, filters, canvas, keyCode) => {
+  const buildUserFilter = (name: FilterName, min, max, step, value, image, filters, canvas, keyCode) => {
     
     const filter = render.buildElement('fieldset', { id: `filter_${name}` }, 'filter');
 

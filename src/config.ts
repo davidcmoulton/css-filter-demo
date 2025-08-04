@@ -12,6 +12,8 @@ type FilterProperties = {
   initial: number,
 };
 
+export type AvailableFilterNames =  'blur' | 'brightness' | 'contrast' | 'grayscale' | 'hue-rotate' | 'invert' | 'opacity' | 'saturate' | 'sepia';
+
 type AvailableFilters = {
   blur: FilterProperties,
   brightness: FilterProperties,
