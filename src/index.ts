@@ -311,8 +311,11 @@ import * as render from './render.js';
     dropZone.addEventListener('drop', handleFileDrop, false);
   };
 
-  const insertImageIntoDom = (image) => {
-    document.querySelector('#imageDropZone').appendChild(image);
+  const insertImageIntoDom = (image: HTMLImageElement): void => {
+    const imageDropZone = document.querySelector('#imageDropZone');
+    if (imageDropZone !== null) {
+      imageDropZone.appendChild(image);
+    }
   }
   
   const sizeCanvasToImage = (image, canvas) => {
