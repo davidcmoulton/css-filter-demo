@@ -14,17 +14,7 @@ type FilterProperties = {
 
 export type AvailableFilterNames =  'blur' | 'brightness' | 'contrast' | 'grayscale' | 'hue-rotate' | 'invert' | 'opacity' | 'saturate' | 'sepia';
 
-type AvailableFilters = {
-  blur: FilterProperties,
-  brightness: FilterProperties,
-  contrast: FilterProperties,
-  grayscale: FilterProperties,
-  'hue-rotate': FilterProperties,
-  invert: FilterProperties,
-  opacity: FilterProperties,
-  saturate: FilterProperties,
-  sepia: FilterProperties,
-};
+type AvailableFilters = { [index: string]: FilterProperties };
 
 export type Config = {
   defaultImagePath: DefaultImagePath,

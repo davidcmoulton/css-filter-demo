@@ -113,7 +113,12 @@ import * as render from './render.js';
     }
   }
 
-  const buildFiltersForm = (image, filters, canvas, keyCode) => {
+  const buildFiltersForm = (
+    image: HTMLImageElement,
+    filters: Config['availableFilters'],
+    canvas: HTMLCanvasElement,
+    keyCode: Config['keyCode']
+  ): HTMLFormElement => {
     
     deleteOldForm();
     
