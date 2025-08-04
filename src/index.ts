@@ -320,7 +320,7 @@ import * as render from './render.js';
     canvas.height = image.naturalHeight || image.height;
   }
 
-  const copyImageToCanvas = (image, context) => {
+  const copyImageToCanvas = (image:HTMLImageElement, context: CanvasRenderingContext2D) => {
     context.drawImage(image, 0, 0);
   };
 
