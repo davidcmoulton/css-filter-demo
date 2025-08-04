@@ -50,7 +50,7 @@ import * as render from './render.js';
 
     const magnitudeWrapper = render.buildElement('div', {}, ['filter__slider']);
     const magnitudeLabel = render.buildElement('label', { for: `magnitude_${name}`}, ['visually-hidden']);
-    const magnitude = render.buildElement('input', { disabled: 'disabled', type: 'range', id: `magnitude_${name}`, value, min, max, step }, null);
+    const magnitude = render.buildElement('input', { disabled: 'disabled', type: 'range', id: `magnitude_${name}`, value, min, max, step });
     magnitudeLabel.innerHTML = 'Magnitude:';
     magnitude.addEventListener('input', (e) => { update(image, filters, canvas); });
 
@@ -59,7 +59,7 @@ import * as render from './render.js';
     userFilterWrapper.appendChild(userFilterLabel);
     userFilterWrapper.appendChild(dragHandle);
     userFilterLabel.appendChild(document.createTextNode(`${name}(`));
-    userFilterLabel.appendChild(render.buildElement('output', { id: `magnitudeReporter_${name}` }, null));
+    userFilterLabel.appendChild(render.buildElement('output', { id: `magnitudeReporter_${name}` }));
     userFilterLabel.appendChild(document.createTextNode(')'));
 
     filter.appendChild(magnitudeWrapper);
@@ -350,7 +350,7 @@ import * as render from './render.js';
   };
 
   const createDefaultImageElement = (): HTMLImageElement => {
-    return render.buildElement('img', { id: 'sampleImage', alt: 'Sample image to which the filters are applied' }, null) as HTMLImageElement;
+    return render.buildElement('img', { id: 'sampleImage', alt: 'Sample image to which the filters are applied' }) as HTMLImageElement;
   }
 
   const convertFiltersToFileNameComponent = (filters) => (

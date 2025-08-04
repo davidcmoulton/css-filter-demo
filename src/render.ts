@@ -1,6 +1,10 @@
-  type BuildElement = (name: string, attributes: { [index: string]: string | number }, classes: Array<string>| null) => HTMLElement;
+  type BuildElement = (
+    name: string,
+    attributes: { [index: string]: string | number },
+    classes?: Array<string>
+  ) => HTMLElement;
 
-  export const buildElement: BuildElement = (name, attributes, classes) => {
+  export const buildElement: BuildElement = (name, attributes, classes = undefined) => {
     const element = document.createElement(name);
 
     Object.keys(attributes).forEach((attr) => {
