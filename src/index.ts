@@ -219,7 +219,7 @@ import * as render from './render.js';
     slider.blur();
   };
 
-  const activate = (element) => {
+  const activate = (element: HTMLElement) => {
     element.classList.add('active');
   }
 
