@@ -2,7 +2,6 @@ import { config, Config, AvailableFilterNames as FilterName } from './config.js'
 import * as render from './render.js';
 
 (function (window, config: Config) {
-  const doc = window.document;
 
     // Keyboard interaction
     const handleKeyUp = (e, keyCode: Config['keyCode']) => {
@@ -59,9 +58,9 @@ import * as render from './render.js';
     userFilterWrapper.appendChild(userFilterToggle);
     userFilterWrapper.appendChild(userFilterLabel);
     userFilterWrapper.appendChild(dragHandle);
-    userFilterLabel.appendChild(doc.createTextNode(`${name}(`));
+    userFilterLabel.appendChild(document.createTextNode(`${name}(`));
     userFilterLabel.appendChild(render.buildElement('output', { id: `magnitudeReporter_${name}` }, null));
-    userFilterLabel.appendChild(doc.createTextNode(')'));
+    userFilterLabel.appendChild(document.createTextNode(')'));
 
     filter.appendChild(magnitudeWrapper);
     magnitudeWrapper.appendChild(magnitudeLabel);
@@ -79,7 +78,7 @@ import * as render from './render.js';
   }
 
   const deleteOldForm = () => {
-    const oldform: HTMLFormElement | null = doc.querySelector('form.filters-grid');
+    const oldform: HTMLFormElement | null = document.querySelector('form.filters-grid');
     oldform?.parentElement?.removeChild(oldform);
   };
 
@@ -98,7 +97,7 @@ import * as render from './render.js';
   };
 
   const addFormToDom = (form) => {
-    doc.querySelector('#filters').insertBefore(form, doc.querySelector('#filtersRider'));
+    document.querySelector('#filters').insertBefore(form, document.querySelector('#filtersRider'));
   }
 
   const buildFiltersForm = (image, filters, canvas, keyCode) => {
@@ -122,10 +121,10 @@ import * as render from './render.js';
   // FILTER BEHAVIOUR
 
   const setFilter = (filters, image, name, unit = '') => {
-    const magnitudeElement = doc.querySelector(`#magnitude_${name}`);
-    const magnitudeReporter = doc.querySelector(`#magnitudeReporter_${name}`);
+    const magnitudeElement = document.querySelector(`#magnitude_${name}`);
+    const magnitudeReporter = document.querySelector(`#magnitudeReporter_${name}`);
     const filterElement = magnitudeElement.closest('.filter');
-    if (doc.querySelector(`#${name}`).checked) {
+    if (document.querySelector(`#${name}`).checked) {
       turnOnFilter(filterElement)
       const magnitude = `${magnitudeElement.value}${unit}`;
       image.style.filter += `${name}(${magnitude}`;
@@ -142,7 +141,7 @@ import * as render from './render.js';
     const appliedFilters = image.style.filter;
     let nonDefaultApplied = false;
     // TODO: relate userFilters to where they're built?
-    const userFilters = doc.querySelectorAll('.filter');
+    const userFilters = document.querySelectorAll('.filter');
     userFilters?.forEach((userFilter) => {
       const name = userFilter.getAttribute('id').substring(7);
       const filter = filters[name];
@@ -228,21 +227,21 @@ import * as render from './render.js';
     
     image.style.filter = '';
     
-    const userFilterList = doc.querySelectorAll('.filter');
+    const userFilterList = document.querySelectorAll('.filter');
     
     userFilterList.forEach((userFilter) => {
       const name = userFilter.getAttribute('id').substring(7);
       setFilter(filters, image, name, filters[name].unit);
     });
 
-    const imageWrapper = doc.querySelector('.image-wrapper');
-    const summary = doc.querySelector('#summary');
-    const controls = doc.querySelector('#controls');
+    const imageWrapper = document.querySelector('.image-wrapper');
+    const summary = document.querySelector('#summary');
+    const controls = document.querySelector('#controls');
     
     if (isNonDefaultFilterApplied(image, filters)) {
       activate(imageWrapper);
       show(summary, controls);
-      resetCopyButton(doc.querySelector('#copy'));
+      resetCopyButton(document.querySelector('#copy'));
       printFilters(image);
     } else {
       deactivate(imageWrapper);
@@ -255,7 +254,7 @@ import * as render from './render.js';
   };
 
   const reset = (image, filters, canvas, keyCode) => {
-    const form = doc.querySelector('form');
+    const form = document.querySelector('form');
     form.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => { checkbox.checked = false; });
     buildFiltersForm(image, filters, canvas, keyCode);
     update(image, filters);
@@ -268,11 +267,11 @@ import * as render from './render.js';
   };
 
   const printFilters = (image) => {
-    doc.querySelector('#filtersOutput').innerHTML = `filter: ${image.style.filter};`;
+    document.querySelector('#filtersOutput').innerHTML = `filter: ${image.style.filter};`;
   };
 
   const clearPrintedFilters = () => {
-    doc.querySelector('#filtersOutput').innerHTML = '';
+    document.querySelector('#filtersOutput').innerHTML = '';
   };
 
   // DRAG IMAGE
@@ -289,7 +288,7 @@ import * as render from './render.js';
   };
 
   const setupImageSelection = (image) => {
-    doc.querySelector('#filePicker').addEventListener('change', (e) => {
+    document.querySelector('#filePicker').addEventListener('change', (e) => {
       processImageFile(e.target.files[0], image);
     });
   };
@@ -307,13 +306,13 @@ import * as render from './render.js';
       e.dataTransfer.dropEffect = 'copy';
     };
 
-    const dropZone = doc.querySelector('#imageDropZone');
+    const dropZone = document.querySelector('#imageDropZone');
     dropZone.addEventListener('dragover', handDragOver);
     dropZone.addEventListener('drop', handleFileDrop, false);
   };
 
   const insertImageIntoDom = (image) => {
-    doc.querySelector('#imageDropZone').appendChild(image);
+    document.querySelector('#imageDropZone').appendChild(image);
   }
   
   const sizeCanvasToImage = (image, canvas) => {
@@ -331,7 +330,7 @@ import * as render from './render.js';
 
   const buildCanvas = () => {
     const canvas = render.buildElement('canvas', { id: 'canvas' }, ['visually-hidden']);
-    doc.querySelector('body').appendChild(canvas);
+    document.querySelector('body').appendChild(canvas);
     return canvas;
   }
 
@@ -345,7 +344,7 @@ import * as render from './render.js';
   };
 
   const updateImageForDownload = (image, canvas) => {
-    const downloader = doc.querySelector('#imageDownload');
+    const downloader = document.querySelector('#imageDownload');
     downloader.setAttribute('download', `image--${convertFiltersToFileNameComponent(image.style.filter)}`)
     downloader.href = canvas.toDataURL();
   };
@@ -414,14 +413,14 @@ import * as render from './render.js';
 
     const handleDrop = (filter) => (e) => {
       e.preventDefault();
-      const dropped = doc.getElementById(e.dataTransfer.getData('text/plain'));
+      const dropped = document.getElementById(e.dataTransfer.getData('text/plain'));
       filter.parentElement.insertBefore(e.currentTarget, dropped);
       dropped.classList.remove('move-up', 'move-down', 'is-dragged-over');
       update(image, filters, canvas);
     };
 
     const handleDragLeave = (filter) => (e) => {
-      if (e.target.nodeType === doc.ELEMENT_NODE) {
+      if (e.target.nodeType === document.ELEMENT_NODE) {
         clearDraggedOverClassesFromElement(e.currentTarget);
         }
     };
