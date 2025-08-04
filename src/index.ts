@@ -334,7 +334,7 @@ import * as render from './render.js';
     return canvas;
   }
 
-  const updateCanvas = (image, canvas) => {
+  const updateCanvas = (image: HTMLImageElement, canvas: HTMLCanvasElement): HTMLCanvasElement => {
     sizeCanvasToImage(image, canvas);
 
     const context = canvas.getContext('2d');
