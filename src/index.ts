@@ -92,10 +92,10 @@ import * as render from './render.js';
     oldform?.parentElement?.removeChild(oldform);
   };
 
-  const buildControls = (image, filters, canvas) => {
+  const buildControls = (image: HTMLImageElement, filters: Config['availableFilters'], canvas: HTMLCanvasElement): HTMLElement => {
     const controls = render.buildElement('div', { id: 'controls' }, ['controls']);
     const resetButton = buildButton('reset', 'Reset', 'reset');
-    resetButton.addEventListener('click', () => { reset(image, filters, canvas); });
+    resetButton.addEventListener('click', () => { reset(image, filters, canvas, config.keyCode); });
     
     const copyButton = buildButton('copy', 'Copy to clipboard', 'button');
     copyButton.addEventListener('click', (e) => { copyToClipboard(e, image); });
