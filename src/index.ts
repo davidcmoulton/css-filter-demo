@@ -387,8 +387,8 @@ import * as render from './render.js';
     context.drawImage(image, 0, 0);
   };
 
-  const applyFilterToCanvas = (context, filter) => {
-    context.filter = filter;
+  const applyFilterToCanvas = (context: CanvasRenderingContext2D, filterToApply: string): void => {
+    context.filter = filterToApply;
   }
 
   const buildCanvas = (): HTMLCanvasElement => {
