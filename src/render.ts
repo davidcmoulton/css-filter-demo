@@ -1,6 +1,15 @@
-  export const buildElement = (name, attributes, ...classes) => {
+  type BuildElement = (name: string, attributes: { [index: string]: string }, classes: Array<string>| null) => HTMLElement;
+
+  export const buildElement: BuildElement = (name, attributes, classes) => {
     const element = document.createElement(name);
-    Object.keys(attributes).forEach((attr) => { element.setAttribute(attr, attributes[attr]); });
-    classes.forEach((cls) => {element.classList.add(cls)});
+
+    Object.keys(attributes).forEach((attr) => {
+      const attrValue = attributes[attr]
+      if (attrValue?.length) {
+        element.setAttribute(attr, attrValue); 
+      }
+    });
+
+    classes?.forEach((cls: string) => {element.classList.add(cls)});
     return element;
   }

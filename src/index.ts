@@ -22,11 +22,11 @@ import * as render from './render.js';
 
   const buildUserFilter = (name: FilterName, min, max, step, value, image: HTMLImageElement, filters, canvas: HTMLCanvasElement, keyCode: Config['keyCode']) => {
     
-    const filter = render.buildElement('fieldset', { id: `filter_${name}` }, 'filter');
+    const filter = render.buildElement('fieldset', { id: `filter_${name}` }, ['filter']);
 
-    const userFilterWrapper = render.buildElement('div', {}, 'filter__toggle');
-    const userFilterLabel = render.buildElement('label', { for: name }, 'filter__label');
-    const userFilterToggle = render.buildElement('input', { id: name, type: 'checkbox', name: 'filters', value: 'on' }, 'visually-hidden');
+    const userFilterWrapper = render.buildElement('div', {}, ['filter__toggle']);
+    const userFilterLabel = render.buildElement('label', { for: name }, ['filter__label']);
+    const userFilterToggle = render.buildElement('input', { id: name, type: 'checkbox', name: 'filters', value: 'on' }, ['visually-hidden']);
     userFilterToggle.addEventListener('input', () => { update(image, filters, canvas); })
 
     userFilterWrapper.addEventListener('keydown', (e) => {
@@ -44,14 +44,14 @@ import * as render from './render.js';
     }, true);
     userFilterWrapper.addEventListener('keyup', (e) => handleKeyUp(e, keyCode));
 
-    const dragHandle = render.buildElement('button', { type: 'button' }, 'filter__drag_handle');
+    const dragHandle = render.buildElement('button', { type: 'button' }, ['filter__drag_handle']);
     dragHandle.addEventListener('mousedown', () => { filter.setAttribute('draggable', 'true') });
     dragHandle.addEventListener('mouseup', () => { filter.removeAttribute('draggable') });
     dragHandle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" data-filter-move-icon><path d="M0 0h24v24H0z" fill="none"/><path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"/></svg>';
 
-    const magnitudeWrapper = render.buildElement('div', {}, 'filter__slider');
-    const magnitudeLabel = render.buildElement('label', { for: `magnitude_${name}`}, 'visually-hidden');
-    const magnitude = render.buildElement('input', { disabled: 'disabled', type: 'range', id: `magnitude_${name}`, value, min, max, step });
+    const magnitudeWrapper = render.buildElement('div', {}, ['filter__slider']);
+    const magnitudeLabel = render.buildElement('label', { for: `magnitude_${name}`}, ['visually-hidden']);
+    const magnitude = render.buildElement('input', { disabled: 'disabled', type: 'range', id: `magnitude_${name}`, value, min, max, step }, null);
     magnitudeLabel.innerHTML = 'Magnitude:';
     magnitude.addEventListener('input', (e) => { update(image, filters, canvas); });
 
@@ -60,7 +60,7 @@ import * as render from './render.js';
     userFilterWrapper.appendChild(userFilterLabel);
     userFilterWrapper.appendChild(dragHandle);
     userFilterLabel.appendChild(doc.createTextNode(`${name}(`));
-    userFilterLabel.appendChild(render.buildElement('output', { id: `magnitudeReporter_${name}` }));
+    userFilterLabel.appendChild(render.buildElement('output', { id: `magnitudeReporter_${name}` }, null));
     userFilterLabel.appendChild(doc.createTextNode(')'));
 
     filter.appendChild(magnitudeWrapper);
@@ -73,7 +73,7 @@ import * as render from './render.js';
   type BuildButton = (id: string, text: string, type: 'button' | 'reset') => HTMLButtonElement;
 
   const buildButton: BuildButton = (id, text, type) => {
-    const button = render.buildElement('button', { id, type }, 'button');
+    const button = render.buildElement('button', { id, type }, ['button']);
     button.innerHTML = text;
     return button;
   }
@@ -84,7 +84,7 @@ import * as render from './render.js';
   };
 
   const buildControls = (image, filters, canvas) => {
-    const controls = render.buildElement('div', { id: 'controls' }, 'controls');
+    const controls = render.buildElement('div', { id: 'controls' }, ['controls']);
     const resetButton = buildButton('reset', 'Reset', 'reset');
     resetButton.addEventListener('click', () => { reset(image, filters, canvas); });
     
@@ -105,7 +105,7 @@ import * as render from './render.js';
     
     deleteOldForm();
     
-    const form = render.buildElement('form', {}, 'filters-grid');
+    const form = render.buildElement('form', {}, ['filters-grid']);
 
     Object.keys(filters).forEach((name) => {
       const filter = filters[name];
@@ -330,7 +330,7 @@ import * as render from './render.js';
   }
 
   const buildCanvas = () => {
-    const canvas = render.buildElement('canvas', { id: 'canvas' }, 'visually-hidden');
+    const canvas = render.buildElement('canvas', { id: 'canvas' }, ['visually-hidden']);
     doc.querySelector('body').appendChild(canvas);
     return canvas;
   }
@@ -351,7 +351,7 @@ import * as render from './render.js';
   };
 
   const createDefaultImageElement = () => {
-    return render.buildElement('img', { id: 'sampleImage', alt: 'Sample image to which the filters are applied' });
+    return render.buildElement('img', { id: 'sampleImage', alt: 'Sample image to which the filters are applied' }, null);
   }
 
   const convertFiltersToFileNameComponent = (filters) => (
