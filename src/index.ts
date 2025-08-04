@@ -320,8 +320,11 @@ import * as render from './render.js';
     e.target.setAttribute('disabled', 'disabled');
   };
 
-  const printFilters = (image) => {
-    document.querySelector('#filtersOutput').innerHTML = `filter: ${image.style.filter};`;
+  const printFilters = (image: HTMLImageElement): void => {
+    const filtersOutput = document.querySelector('#filtersOutput');
+    if (filtersOutput !== null) {
+      filtersOutput.innerHTML = `filter: ${image.style.filter};`;
+    }
   };
 
   const clearPrintedFilters = (): void => {
