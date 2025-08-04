@@ -191,13 +191,13 @@ import * as render from './render.js';
     return nonDefaultApplied;
   };
 
-  const hide = (...elements) => {
+  const hide = (...elements: Array<Element>): void => {
     elements.forEach((element) => {
       element.classList.add('hidden');
     });
   }
 
-  const show = (...elements) => {
+  const show = (...elements: Array<Element>): void => {
     elements.forEach((element) => {
       element.classList.remove('hidden');
     });
