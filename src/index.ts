@@ -246,13 +246,14 @@ import * as render from './render.js';
     slider?.focus();
   };
 
-  const turnOffFilter = (filter) => {
+  const turnOffFilter = (filter: HTMLElement): void => {
     deactivate(filter);
-    filter.querySelector('[name="filters"]').checked = false;
+    const filterCheckbox = filter.querySelector('[name="filters"]') as HTMLInputElement;
+    filterCheckbox.checked = false;
 
-    const slider = filter.querySelector('input[type="range"]');
-    slider.setAttribute('disabled', 'disabled');
-    slider.blur();
+    const slider = filter.querySelector('input[type="range"]') as HTMLInputElement;
+    slider?.setAttribute('disabled', 'disabled');
+    slider?.blur();
   };
 
   const activate = (element: HTMLElement) => {
