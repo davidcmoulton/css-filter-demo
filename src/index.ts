@@ -378,7 +378,7 @@ import * as render from './render.js';
     }
   }
   
-  const sizeCanvasToImage = (image, canvas) => {
+  const sizeCanvasToImage = (image: HTMLImageElement, canvas: HTMLCanvasElement): void => {
     canvas.width = image.naturalWidth || image.width;
     canvas.height = image.naturalHeight || image.height;
   }
