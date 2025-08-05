@@ -269,25 +269,26 @@ import * as render from './render.js';
     button.removeAttribute('disabled');
   };
 
-  const update = (image, filters, canvas) => {
+  const update = (image: HTMLImageElement, filters: Config['availableFilters'], canvas: HTMLCanvasElement): void => {
     
     image.style.filter = '';
     
     const userFilterList = document.querySelectorAll('.filter');
     
     userFilterList.forEach((userFilter) => {
-      const name = userFilter.getAttribute('id').substring(7);
-      setFilter(filters, image, name, filters[name].unit);
+      const name = userFilter?.getAttribute('id')?.substring(7) ?? '';
+      setFilter(filters, image, name, filters[name]?.unit);
     });
 
-    const imageWrapper = document.querySelector('.image-wrapper');
-    const summary = document.querySelector('#summary');
-    const controls = document.querySelector('#controls');
+    const imageWrapper = document.querySelector('.image-wrapper') as HTMLImageElement;
+    const summary = document.querySelector('#summary') as HTMLElement;
+    const controls = document.querySelector('#controls') as HTMLImageElement;
     
     if (isNonDefaultFilterApplied(image, filters)) {
       activate(imageWrapper);
       show(summary, controls);
-      resetCopyButton(document.querySelector('#copy'));
+      const copyButton = document.querySelector('#copy') as HTMLButtonElement;
+      resetCopyButton(copyButton);
       printFilters(image);
     } else {
       deactivate(imageWrapper);
