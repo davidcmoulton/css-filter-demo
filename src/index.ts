@@ -320,10 +320,11 @@ import * as render from './render.js';
     }
   };
 
-  const copyToClipboard = (e, image) => {
+  const copyToClipboard = (e: MouseEvent, image: HTMLImageElement) => {
     navigator.clipboard.writeText(`filter: ${image.style.filter};`);
-    e.target.innerHTML = 'Copied!'
-    e.target.setAttribute('disabled', 'disabled');
+    const elementTarget = e.target as HTMLElement;
+    elementTarget.innerHTML = 'Copied!'
+    elementTarget.setAttribute('disabled', 'disabled');
   };
 
   const printFilters = (image: HTMLImageElement): void => {
