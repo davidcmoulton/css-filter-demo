@@ -343,13 +343,14 @@ import * as render from './render.js';
 
   // DRAG IMAGE
 
-  const processImageFile = (file, image) => {
+  const processImageFile = (file: Blob, image: HTMLImageElement) => {
     if (!file) {
       return;
     }
     const reader = new FileReader();
-    reader.onload = (e) => {
-      image.src = e.target.result;
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      const result = e?.target?.result?.toString() ?? '';
+      image.src = result;
     };
     reader.readAsDataURL(file);
   };
