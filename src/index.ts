@@ -38,17 +38,19 @@ import * as render from './render.js';
     const userFilterToggle = render.buildElement('input', { id: name, type: 'checkbox', name: 'filters', value: 'on' }, ['visually-hidden']);
     userFilterToggle.addEventListener('input', () => { update(image, filters, canvas); })
 
-    userFilterWrapper.addEventListener('keydown', (e) => {
+    userFilterWrapper.addEventListener('keydown', (e: KeyboardEvent) => {
       console.log(e.keyCode);
       console.log(e.target);
+      const eventTarget = e.target as HTMLElement;
+      const releventFilter = eventTarget.closest('.filter') as HTMLFieldSetElement;
       if (e.keyCode === keyCode.up) {
         e.preventDefault();
         e.stopPropagation();
-        promoteFilter(e.target.closest('.filter'));
+        promoteFilter(releventFilter);
       } else if (e.keyCode === keyCode.down) {
         e.preventDefault();
         e.stopPropagation();
-        demoteFilter(e.target.closest('.filter'));
+        demoteFilter(releventFilter);
       }
     }, true);
     userFilterWrapper.addEventListener('keyup', (e) => handleKeyUp(e, keyCode));
