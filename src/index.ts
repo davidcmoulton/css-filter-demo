@@ -366,23 +366,27 @@ import * as render from './render.js';
     });
   };
 
-  const setupImageDropZone = (image) => {
-    const handleFileDrop = (e) => {
+  const setupImageDropZone = (image: HTMLImageElement): void => {
+    const handleFileDrop = (e: DragEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      processImageFile(e.dataTransfer.files[0], image);
+      const filesDropped = e.dataTransfer?.files as FileList;
+      if (filesDropped[0]) {
+        processImageFile(filesDropped[0], image);
+      }
     };
 
-    const handDragOver = (e) => {
+    const handDragOver = (e: DragEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      e.dataTransfer.dropEffect = 'copy';
+      const dataTransfer = e.dataTransfer as DataTransfer;
+      dataTransfer.dropEffect = 'copy';
     };
 
-    const dropZone = document.querySelector('#imageDropZone');
-    dropZone.addEventListener('dragover', handDragOver);
-    dropZone.addEventListener('drop', handleFileDrop, false);
-  };
+    const dropZone = document.querySelector('#imageDropZone') as HTMLElement;
+    dropZone?.addEventListener('dragover', handDragOver);
+    dropZone?.addEventListener('drop', handleFileDrop, false);
+  };  
 
   const insertImageIntoDom = (image: HTMLImageElement): void => {
     const imageDropZone = document.querySelector('#imageDropZone');
