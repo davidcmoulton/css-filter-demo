@@ -355,9 +355,14 @@ import * as render from './render.js';
     reader.readAsDataURL(file);
   };
 
-  const setupImageSelection = (image) => {
-    document.querySelector('#filePicker').addEventListener('change', (e) => {
-      processImageFile(e.target.files[0], image);
+  const setupImageSelection = (image: HTMLImageElement) => {
+    const filePicker = document.querySelector('#filePicker');
+    filePicker?.addEventListener('change', (e: Event) => {
+      const eventTarget = e.target as HTMLInputElement;
+      const files = eventTarget.files as FileList;
+      if (files[0] !== undefined) {
+        processImageFile(files[0], image);
+      }
     });
   };
 
