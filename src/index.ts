@@ -4,16 +4,19 @@ import * as render from './render.js';
 (function (window, config: Config) {
 
     // Keyboard interaction
-    const handleKeyUp = (e, keyCode: Config['keyCode']) => {
-      const filter = e.target.closest('.filter');
-      switch (e.keyCode) {
-        case keyCode.enter:
-          toggleFilter(filter);
-        break;
-        default:
-          e.preventDefault();
-          e.stopPropagation();  
-        break;
+    const handleKeyUp = (e: KeyboardEvent, keyCode: Config['keyCode']): void => {
+      const eventTarget = e.target as HTMLElement;
+      const filter = eventTarget.closest('.filter') as HTMLElement;
+      if (filter !== null) {
+        switch (e.keyCode) {
+          case keyCode.enter:
+            toggleFilter(filter);
+          break;
+          default:
+            e.preventDefault();
+            e.stopPropagation();  
+          break;
+        }
       }
     };
 
