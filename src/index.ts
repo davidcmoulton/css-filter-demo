@@ -96,10 +96,13 @@ import * as render from './render.js';
     return filter;
   };
 
-  const buildControls = (image: HTMLImageElement, filters: Config['availableFilters'], canvas: HTMLCanvasElement): HTMLElement => {
+  const buildControls = (
+    image: HTMLImageElement,
+    resetFormAction: unknown,
+  ): HTMLElement => {
     const controls = render.buildElement('div', { id: 'controls' }, ['controls']);
     const resetButton = render.buildButton('reset', 'Reset', 'reset');
-    resetButton.addEventListener('click', () => { reset(image, filters, canvas, config.keyCode); });
+    resetButton.addEventListener('click', () => resetFormAction);
 
     const copyButton = render.buildButton('copy', 'Copy to clipboard', 'button');
     copyButton.addEventListener('click', (e) => { copyToClipboard(e, image); });
@@ -147,7 +150,8 @@ import * as render from './render.js';
       }
     });
 
-    form.appendChild(buildControls(image, filters, canvas));
+    const resetFormAction = reset(image, filters, canvas, config.keyCode);
+    form.appendChild(buildControls(image, resetFormAction));
 
     addFormToDom(form);
 
