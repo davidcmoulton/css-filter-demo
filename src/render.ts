@@ -25,9 +25,14 @@ export const buildElement: BuildElement = (name, attributes, classes): HTMLEleme
   return element;
 }
 
-export const buildButton = (id: string, text: string, type: 'button' | 'reset'): HTMLButtonElement => {
+export type EventListenerCallback = (e: Event) => void;
+
+export const buildButton = (id: string, text: string, type: 'button' | 'reset', callback: EventListenerCallback): HTMLButtonElement => {
   const button = buildElement('button', { id, type }, ['button']) as HTMLButtonElement;
   button.innerHTML = text;
+  if (callback !== undefined) {
+    button.addEventListener('click', callback);
+  }
   return button;
 }
 

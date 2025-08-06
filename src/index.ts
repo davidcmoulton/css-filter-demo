@@ -1,8 +1,6 @@
 import { config, Config } from './config.js';
 import * as render from './render.js';
 
-type EventListenerCallback = (e: Event) => void;
-
 (function (window, config: Config) {
 
     // Keyboard interaction
@@ -99,17 +97,15 @@ type EventListenerCallback = (e: Event) => void;
   };
 
   const buildControls = (
-    resetFormAction: EventListenerCallback,
-    copyToClipboardAction: EventListenerCallback,
+    resetFormAction: render.EventListenerCallback,
+    copyToClipboardAction: render.EventListenerCallback,
   ): HTMLElement => {
     const controls = render.buildElement('div', { id: 'controls' }, ['controls']);
 
-    const resetButton = render.buildButton('reset', 'Reset', 'reset') as HTMLButtonElement;
-    resetButton.addEventListener('click', resetFormAction);
+    const resetButton = render.buildButton('reset', 'Reset', 'reset', resetFormAction) as HTMLButtonElement;
     controls.appendChild(resetButton);
 
-    const copyButton = render.buildButton('copy', 'Copy to clipboard', 'button');
-    copyButton.addEventListener('click', copyToClipboardAction);
+    const copyButton = render.buildButton('copy', 'Copy to clipboard', 'button', copyToClipboardAction);
     controls.appendChild(copyButton);
 
     return controls
