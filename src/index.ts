@@ -96,21 +96,6 @@ import * as render from './render.js';
     return filter;
   };
 
-  const buildControls = (
-    resetFormAction: render.EventListenerCallback,
-    copyToClipboardAction: render.EventListenerCallback,
-  ): HTMLElement => {
-    const controls = render.buildElement('div', { id: 'controls' }, ['controls']);
-
-    const resetButton = render.buildButton('reset', 'Reset', 'reset', resetFormAction) as HTMLButtonElement;
-    controls.appendChild(resetButton);
-
-    const copyButton = render.buildButton('copy', 'Copy to clipboard', 'button', copyToClipboardAction);
-    controls.appendChild(copyButton);
-
-    return controls
-  };
-
   const addFormToDom = (form: HTMLFormElement) => {
     const filtersElement = document.querySelector('#filters');
     if (filtersElement !== null) {
@@ -150,7 +135,7 @@ import * as render from './render.js';
 
     const resetFormAction = (e: Event) => { reset(image, filters, canvas, config.keyCode) };
     const copyToClipboardAction = (e: Event) => { copyToClipboard(image)(e) };
-    form.appendChild(buildControls(resetFormAction, copyToClipboardAction));
+    form.appendChild(render.buildControls(resetFormAction, copyToClipboardAction));
 
     addFormToDom(form);
 

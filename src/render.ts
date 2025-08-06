@@ -36,6 +36,21 @@ export const buildButton = (id: string, text: string, type: 'button' | 'reset', 
   return button;
 }
 
+export const buildControls = (
+  resetFormAction: EventListenerCallback,
+  copyToClipboardAction: EventListenerCallback,
+): HTMLElement => {
+  const controls = buildElement('div', { id: 'controls' }, ['controls']);
+
+  const resetButton = buildButton('reset', 'Reset', 'reset', resetFormAction) as HTMLButtonElement;
+  controls.appendChild(resetButton);
+
+  const copyButton = buildButton('copy', 'Copy to clipboard', 'button', copyToClipboardAction);
+  controls.appendChild(copyButton);
+
+  return controls
+};
+
 export const deleteOldForm = () => {
     const oldform = document.querySelector('form.filters-grid');
     oldform?.parentElement?.removeChild(oldform);
