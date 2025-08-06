@@ -96,14 +96,6 @@ import * as render from './render.js';
     return filter;
   };
 
-  type BuildButton = (id: string, text: string, type: 'button' | 'reset') => HTMLButtonElement;
-
-  const buildButton: BuildButton = (id, text, type) => {
-    const button = render.buildElement('button', { id, type }, ['button']) as HTMLButtonElement;
-    button.innerHTML = text;
-    return button;
-  }
-
   const deleteOldForm = () => {
     const oldform: HTMLFormElement | null = document.querySelector('form.filters-grid');
     oldform?.parentElement?.removeChild(oldform);
@@ -111,10 +103,10 @@ import * as render from './render.js';
 
   const buildControls = (image: HTMLImageElement, filters: Config['availableFilters'], canvas: HTMLCanvasElement): HTMLElement => {
     const controls = render.buildElement('div', { id: 'controls' }, ['controls']);
-    const resetButton = buildButton('reset', 'Reset', 'reset');
+    const resetButton = render.buildButton('reset', 'Reset', 'reset');
     resetButton.addEventListener('click', () => { reset(image, filters, canvas, config.keyCode); });
     
-    const copyButton = buildButton('copy', 'Copy to clipboard', 'button');
+    const copyButton = render.buildButton('copy', 'Copy to clipboard', 'button');
     copyButton.addEventListener('click', (e) => { copyToClipboard(e, image); });
 
     controls.appendChild(resetButton);

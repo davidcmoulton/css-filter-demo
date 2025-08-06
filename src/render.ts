@@ -17,3 +17,11 @@
     classes?.forEach((cls: string) => {element.classList.add(cls)});
     return element;
   }
+
+    export const buildButton = (id: string, text: string, type: 'button' | 'reset'): HTMLButtonElement => {
+      const button = buildElement('button', { id, type }, ['button']) as HTMLButtonElement;
+      button.innerHTML = text;
+      return button;
+    }
+  
+  
