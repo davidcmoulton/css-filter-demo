@@ -1,7 +1,3 @@
-.PHONY: clean
-clean:
-	rm -rf ./dist
-
 .PHONY: build
 build: clean
 	./node_modules/.bin/tsc --build --verbose
@@ -10,3 +6,7 @@ build: clean
 	mkdir -p ./dist/images
 	cp ./src/images/chopper.jpeg ./dist/images/chopper.jpeg
 	cp ./src/images/move.svg ./dist/images/move.svg
+
+.PHONY: clean
+clean:
+	rm -rf ./dist
