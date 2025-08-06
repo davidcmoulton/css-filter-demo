@@ -24,8 +24,10 @@ export const config: Config = {
   defaultImagePath: './images/chopper.jpeg',
   keyCode: {
     enter: 13,
+    left: 37,
     up: 38,
-    down: 40
+    right: 39,
+    down: 40,
   },
   availableFilters: {
     blur: {

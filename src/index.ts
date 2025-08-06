@@ -57,6 +57,15 @@ import * as render from './render.js';
           e.stopPropagation();
           demoteFilter(releventFilter);
           break;
+        case keyCode.left:
+        case keyCode.right:
+          e.preventDefault();
+          e.stopPropagation();
+          const slider = filter.querySelector('input[type="range"]') as HTMLInputElement;
+          slider.focus();
+          break;
+        default:
+          break;
       }
     }, true);
     userFilterWrapper.addEventListener('keyup', (e) => handleKeyUp(e, keyCode));
