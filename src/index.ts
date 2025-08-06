@@ -1,6 +1,8 @@
 import { config, Config } from './config.js';
 import * as render from './render.js';
 
+type EventListenerCallback = (e: Event) => void;
+
 (function (window, config: Config) {
 
     // Keyboard interaction
@@ -97,17 +99,17 @@ import * as render from './render.js';
   };
 
   const buildControls = (
-    image: HTMLImageElement,
-    resetFormAction: unknown,
+    resetFormAction: EventListenerCallback,
+    copyToClipboardAction: EventListenerCallback,
   ): HTMLElement => {
     const controls = render.buildElement('div', { id: 'controls' }, ['controls']);
-    const resetButton = render.buildButton('reset', 'Reset', 'reset');
-    resetButton.addEventListener('click', () => resetFormAction);
+
+    const resetButton = render.buildButton('reset', 'Reset', 'reset') as HTMLButtonElement;
+    resetButton.addEventListener('click', resetFormAction);
+    controls.appendChild(resetButton);
 
     const copyButton = render.buildButton('copy', 'Copy to clipboard', 'button');
-    copyButton.addEventListener('click', (e) => { copyToClipboard(e, image); });
-
-    controls.appendChild(resetButton);
+    copyButton.addEventListener('click', copyToClipboardAction);
     controls.appendChild(copyButton);
 
     return controls
@@ -150,8 +152,9 @@ import * as render from './render.js';
       }
     });
 
-    const resetFormAction = reset(image, filters, canvas, config.keyCode);
-    form.appendChild(buildControls(image, resetFormAction));
+    const resetFormAction = (e: Event) => { reset(image, filters, canvas, config.keyCode) };
+    const copyToClipboardAction = (e: Event) => { copyToClipboard(image)(e) };
+    form.appendChild(buildControls(resetFormAction, copyToClipboardAction));
 
     addFormToDom(form);
 
@@ -326,7 +329,7 @@ import * as render from './render.js';
     }
   };
 
-  const copyToClipboard = (e: MouseEvent, image: HTMLImageElement) => {
+  const copyToClipboard = (image: HTMLImageElement) => (e: Event) => {
     navigator.clipboard.writeText(`filter: ${image.style.filter};`);
     const elementTarget = e.target as HTMLElement;
     elementTarget.innerHTML = 'Copied!'
