@@ -216,28 +216,27 @@ import * as render from './render.js';
     }
   };
 
-  // const calculatePositionWithinSiblings = (element) => {
-  //   let evaluated = element;
-  //   let siblingPosition = 1;
-  //   while(evaluated.previousElementSibling) {
-  //     evaluated = evaluated.previousElementSibling;
-  //     siblingPosition += 1;
-  //   }
-  //   return siblingPosition;
-  // };
-
-  const promoteFilter = (filter: HTMLFieldSetElement) => {
-    // const siblingPosition = calculatePositionWithinSiblings(filter);
+  const promoteFilter = (filter: HTMLFieldSetElement): void => {
     const parentElement = filter.parentElement;
     if (parentElement !== null) {
-      parentElement.insertBefore(filter, filter.previousElementSibling);
+      const insertionPoint = filter.previousElementSibling;
+      if (insertionPoint) {
+        parentElement.insertBefore(filter, filter.previousElementSibling);
+        const currentDragHandle = filter.querySelector('.filter__drag_handle') as HTMLElement;
+        currentDragHandle?.focus();
+      }
     }
   };
 
-  const demoteFilter = (filter: HTMLFieldSetElement) => {
+  const demoteFilter = (filter: HTMLFieldSetElement): void => {
     const parentElement = filter.parentElement;
     if (parentElement !== null) {
-      parentElement.insertBefore(filter, filter.nextElementSibling);
+      const insertionPoint = filter.nextElementSibling?.nextElementSibling;
+      if (insertionPoint) {
+        parentElement.insertBefore(filter, insertionPoint);
+        const currentDragHandle = filter.querySelector('.filter__drag_handle') as HTMLElement;
+        currentDragHandle?.focus();
+      }
     }
   };
 
