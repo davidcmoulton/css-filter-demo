@@ -4,7 +4,7 @@
     classes?: Array<string>
   ) => HTMLElement;
 
-  export const buildElement: BuildElement = (name, attributes, classes = undefined) => {
+  export const buildElement: BuildElement = (name, attributes, classes = undefined): HTMLElement => {
     const element = document.createElement(name);
 
     Object.keys(attributes).forEach((attr) => {
