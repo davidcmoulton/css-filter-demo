@@ -26,7 +26,7 @@ jobs:
       #   run: npm run build
       # - name: 🧪 Test with coverage
       #   run: npm run test
-      - name: Compile
+      - name: Build
         run: npm run build
       - name: 🚀 Deploy to GitHub Pages 🚀
         if: github.ref == 'refs/heads/main'
