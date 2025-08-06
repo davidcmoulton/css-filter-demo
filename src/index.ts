@@ -246,8 +246,12 @@ import * as render from './render.js';
     filterCheckbox.checked = true;
 
     const slider = filter.querySelector('input[type="range"]') as HTMLInputElement;
+    const justTurnedOn = slider?.hasAttribute('disabled');
+    if (justTurnedOn) {
+      const dragHandle = filter.querySelector('.filter__drag_handle') as HTMLElement;
+      dragHandle?.focus();
+    }
     slider?.removeAttribute('disabled');
-    slider?.focus();
   };
 
   const turnOffFilter = (filter: HTMLElement): void => {
