@@ -5,5 +5,8 @@
   "main": "index.js",
   "devDependencies": {
     "typescript": "^5.9.2"
+  },
+  "scripts": {
+    "compile": "npx tsc"
   }
 }
