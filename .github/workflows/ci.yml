@@ -27,7 +27,7 @@ jobs:
       # - name: 🧪 Test with coverage
       #   run: npm run test
       - name: Compile
-        run: npm run compile
+        run: npm run build
       - name: 🚀 Deploy to GitHub Pages 🚀
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
