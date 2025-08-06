@@ -1,19 +1,26 @@
+  const setAttribute = (name: string, value: string, element: HTMLElement): HTMLElement => {
+      if (value !== undefined && value !== null) {
+        element.setAttribute(name, value);
+      }
+      return element;
+    }
+
+  const setElementAttributes = (element: HTMLElement, attributes: { [index: string]: string | number }): HTMLElement => {
+    Object.keys(attributes).forEach((attribute) => {
+      setAttribute(attribute, attributes[attribute]?.toString() ?? '', element);
+    });
+    return element;
+  };
+
   type BuildElement = (
     name: string,
     attributes: { [index: string]: string | number },
     classes?: Array<string>
   ) => HTMLElement;
 
-  export const buildElement: BuildElement = (name, attributes, classes = undefined): HTMLElement => {
+  export const buildElement: BuildElement = (name, attributes, classes): HTMLElement => {
     const element = document.createElement(name);
-
-    Object.keys(attributes).forEach((attr) => {
-      const attrValue = attributes[attr]
-      if (attrValue !== undefined && attrValue !== null) {
-        element.setAttribute(attr, attrValue.toString());
-      }
-    });
-
+    setElementAttributes(element, attributes);
     classes?.forEach((cls: string) => {element.classList.add(cls)});
     return element;
   }
