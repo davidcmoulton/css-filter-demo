@@ -1,0 +1,12 @@
+export const buildElement = (name, attributes, classes = undefined) => {
+    const element = document.createElement(name);
+    Object.keys(attributes).forEach((attr) => {
+        const attrValue = attributes[attr];
+        if (attrValue !== undefined && attrValue !== null) {
+            element.setAttribute(attr, attrValue.toString());
+        }
+    });
+    classes?.forEach((cls) => { element.classList.add(cls); });
+    return element;
+};
+//# sourceMappingURL=render.js.map
