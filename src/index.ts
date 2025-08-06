@@ -96,11 +96,6 @@ import * as render from './render.js';
     return filter;
   };
 
-  const deleteOldForm = () => {
-    const oldform: HTMLFormElement | null = document.querySelector('form.filters-grid');
-    oldform?.parentElement?.removeChild(oldform);
-  };
-
   const buildControls = (image: HTMLImageElement, filters: Config['availableFilters'], canvas: HTMLCanvasElement): HTMLElement => {
     const controls = render.buildElement('div', { id: 'controls' }, ['controls']);
     const resetButton = render.buildButton('reset', 'Reset', 'reset');
@@ -129,7 +124,7 @@ import * as render from './render.js';
     keyCode: Config['keyCode']
   ): HTMLFormElement => {
 
-    deleteOldForm();
+    render.deleteOldForm();
 
     const form = render.buildElement('form', {}, ['filters-grid']) as HTMLFormElement;
 

@@ -30,3 +30,8 @@ export const buildButton = (id: string, text: string, type: 'button' | 'reset'):
   button.innerHTML = text;
   return button;
 }
+
+export const deleteOldForm = () => {
+    const oldform = document.querySelector('form.filters-grid');
+    oldform?.parentElement?.removeChild(oldform);
+  };
