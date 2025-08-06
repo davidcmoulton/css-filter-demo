@@ -46,14 +46,17 @@ import * as render from './render.js';
       console.log(e.target);
       const eventTarget = e.target as HTMLElement;
       const releventFilter = eventTarget.closest('.filter') as HTMLFieldSetElement;
-      if (e.keyCode === keyCode.up) {
-        e.preventDefault();
-        e.stopPropagation();
-        promoteFilter(releventFilter);
-      } else if (e.keyCode === keyCode.down) {
-        e.preventDefault();
-        e.stopPropagation();
-        demoteFilter(releventFilter);
+      switch (e.keyCode) {
+        case keyCode.up:
+          e.preventDefault();
+          e.stopPropagation();
+          promoteFilter(releventFilter);
+          break;
+        case keyCode.down:
+          e.preventDefault();
+          e.stopPropagation();
+          demoteFilter(releventFilter);
+          break;
       }
     }, true);
     userFilterWrapper.addEventListener('keyup', (e) => handleKeyUp(e, keyCode));
