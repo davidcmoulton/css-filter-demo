@@ -14,7 +14,7 @@ import * as render from './render.js';
           break;
           default:
             e.preventDefault();
-            e.stopPropagation();  
+            e.stopPropagation();
           break;
         }
       }
@@ -33,7 +33,7 @@ import * as render from './render.js';
     canvas: HTMLCanvasElement,
     keyCode: Config['keyCode']
   ): HTMLFieldSetElement => {
-    
+
     const filter = render.buildElement('fieldset', { id: `filter_${name}` }, ['filter']) as HTMLFieldSetElement;
 
     const userFilterWrapper = render.buildElement('div', {}, ['filter__toggle']);
@@ -105,7 +105,7 @@ import * as render from './render.js';
     const controls = render.buildElement('div', { id: 'controls' }, ['controls']);
     const resetButton = render.buildButton('reset', 'Reset', 'reset');
     resetButton.addEventListener('click', () => { reset(image, filters, canvas, config.keyCode); });
-    
+
     const copyButton = render.buildButton('copy', 'Copy to clipboard', 'button');
     copyButton.addEventListener('click', (e) => { copyToClipboard(e, image); });
 
@@ -128,9 +128,9 @@ import * as render from './render.js';
     canvas: HTMLCanvasElement,
     keyCode: Config['keyCode']
   ): HTMLFormElement => {
-    
+
     deleteOldForm();
-    
+
     const form = render.buildElement('form', {}, ['filters-grid']) as HTMLFormElement;
 
     Object.keys(filters).forEach((name) => {
@@ -151,11 +151,11 @@ import * as render from './render.js';
         );
       }
     });
-    
+
     form.appendChild(buildControls(image, filters, canvas));
-    
+
     addFormToDom(form);
-    
+
     return form;
   };
 
@@ -282,11 +282,11 @@ import * as render from './render.js';
   };
 
   const update = (image: HTMLImageElement, filters: Config['availableFilters'], canvas: HTMLCanvasElement): void => {
-    
+
     image.style.filter = '';
-    
+
     const userFilterList = document.querySelectorAll('.filter');
-    
+
     userFilterList.forEach((userFilter) => {
       const name = userFilter?.getAttribute('id')?.substring(7) ?? '';
       setFilter(filters, image, name, filters[name]?.unit);
@@ -295,7 +295,7 @@ import * as render from './render.js';
     const imageWrapper = document.querySelector('.image-wrapper') as HTMLImageElement;
     const summary = document.querySelector('#summary') as HTMLElement;
     const controls = document.querySelector('#controls') as HTMLImageElement;
-    
+
     if (isNonDefaultFilterApplied(image, filters)) {
       activate(imageWrapper);
       show(summary, controls);
@@ -393,7 +393,7 @@ import * as render from './render.js';
     const dropZone = document.querySelector('#imageDropZone') as HTMLElement;
     dropZone?.addEventListener('dragover', handDragOver);
     dropZone?.addEventListener('drop', handleFileDrop, false);
-  };  
+  };
 
   const insertImageIntoDom = (image: HTMLImageElement): void => {
     const imageDropZone = document.querySelector('#imageDropZone');
@@ -401,7 +401,7 @@ import * as render from './render.js';
       imageDropZone.appendChild(image);
     }
   }
-  
+
   const sizeCanvasToImage = (image: HTMLImageElement, canvas: HTMLCanvasElement): void => {
     canvas.width = image.naturalWidth || image.width;
     canvas.height = image.naturalHeight || image.height;
@@ -486,7 +486,7 @@ import * as render from './render.js';
         dataTransfer.effectAllowed = 'move';
       }
       draggedElement = filter;
-      
+
       filter.classList.add('drag-origin');
     };
 
@@ -539,15 +539,15 @@ import * as render from './render.js';
 
     const filterElements = form.querySelectorAll('.filter') as NodeListOf<HTMLElement>;
     filterElements.forEach((filter: HTMLElement) => {
-      
+
       filter.addEventListener('dragstart', handleFilterDragStart);
 
       filter.addEventListener('dragover', handleDragOver);
-      
+
       filter.addEventListener('dragenter', handleDragEnter);
 
       filter.addEventListener('dragleave', handleDragLeave);
-      
+
       filter.addEventListener('dragend', handleDragEnd);
 
       filter.addEventListener('drop', handleDrop(filter));
@@ -558,7 +558,7 @@ import * as render from './render.js';
   window.addEventListener('DOMContentLoaded', () => {
 
     const image = createDefaultImageElement();
-    
+
     image.addEventListener('load', () => {
 
       insertImageIntoDom(image);
@@ -566,13 +566,13 @@ import * as render from './render.js';
       setupImageSelection(image);
       setupImageDropZone(image);
 
-      const canvas = buildCanvas();      
+      const canvas = buildCanvas();
       const form = buildFiltersForm(image, config.availableFilters, canvas, config.keyCode)
       setupFiltersDropZones(form, image, config.availableFilters, canvas);
 
       update(image, config.availableFilters, canvas);
     });
-    
+
     image.src = config.defaultImagePath;
 
   });
