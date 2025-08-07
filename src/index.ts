@@ -16,17 +16,15 @@ import * as render from './render.js';
     demoteFilter: DemoteFilter,
     toggleFilter: ToggleFilter,
     keyCode: Config['keyCode']
-  ) => (filter: HTMLFieldSetElement)
-  => (e: KeyboardEvent) => void;
-
+  ) => KeyDownHandler;
 
   const handleKeyDown: HandleKeyDown = (
-    updateFilter: UpdateFilter,
-    promoteFilter: PromoteFilter,
-    demoteFilter: DemoteFilter,
-    toggleFilter: ToggleFilter,
-    keyCode: Config['keyCode']
-  ) => (filter: HTMLFieldSetElement) => (e: KeyboardEvent) => {
+    updateFilter,
+    promoteFilter,
+    demoteFilter,
+    toggleFilter,
+    keyCode
+  ) => (filter) => (e) => {
     const eventTarget = e.target as HTMLElement;
     const releventFilter = eventTarget.closest('.filter') as HTMLFieldSetElement;
     switch (e.keyCode) {
