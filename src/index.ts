@@ -186,6 +186,8 @@ import * as render from './render.js';
     } else {
       turnOnFilter(filter);
     }
+    const innerInput = filter.querySelector('input[name="filters"]') as HTMLInputElement;
+    innerInput?.focus();
   };
 
   const promoteFilter = (filter: HTMLFieldSetElement): void => {
