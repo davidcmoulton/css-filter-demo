@@ -85,11 +85,9 @@ import * as render from './render.js';
 
   const buildUserFilter = (
     filterName: string,
-    image: HTMLImageElement,
-    filters: Config['availableFilters'],
-    canvas: HTMLCanvasElement,
     handleInput: render.EventListenerCallback,
     keyDownHandler: KeyDownHandler,
+    updateHandler: render.EventListenerCallback
   ): HTMLFieldSetElement => {
 
     const potentialFilterConstraints = config['availableFilters'][filterName];
@@ -103,7 +101,6 @@ import * as render from './render.js';
     const userFilterWrapper = buildUserFilterWrapper(filterName, handleInput, keyDownHandler, filter);
     filter.appendChild(userFilterWrapper);
 
-    const updateHandler = (e: Event) => { update(image, filters, canvas); };
     const magitudeComponent = magnitude.buildComponent(filterName, filterConstraints, updateHandler);
     filter.appendChild(magitudeComponent);
 
@@ -133,9 +130,9 @@ import * as render from './render.js';
       if (filter !== undefined) {
         const updateFilter = () => { update(image, filters, canvas); };
         const handleInput: render.EventListenerCallback = () => { update(image, filters, canvas); };
-
+        const updateHandler = (e: Event) => { update(image, filters, canvas); };
         const keyDownHandler: KeyDownHandler = handleKeyDown(updateFilter, promoteFilter, demoteFilter, toggleFilter, keyCode);
-        const userFilter = buildUserFilter(name, image, filters, canvas, handleInput, keyDownHandler);
+        const userFilter = buildUserFilter(name, handleInput, keyDownHandler, updateHandler);
         form.appendChild(userFilter);
       }
     });
