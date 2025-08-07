@@ -17,7 +17,8 @@ import * as render from './render.js';
     handleInput: render.EventListenerCallback,
     updateFilter: UpdateFilter,
     promoteFilter: PromoteFilter,
-    demoteFilter: DemoteFilter
+    demoteFilter: DemoteFilter,
+    toggleFilter: ToggleFilter
   ): HTMLFieldSetElement => {
 
     const potentialFilterConstraints = config['availableFilters'][filterName];
@@ -37,7 +38,9 @@ import * as render from './render.js';
       filter: HTMLFieldSetElement,
       updateFilter: UpdateFilter,
       promoteFilter: PromoteFilter,
-      demoteFilter: DemoteFilter
+      demoteFilter: DemoteFilter,
+      toggleFilter: ToggleFilter,
+      keyCode: Config['keyCode']
     ) => (e: KeyboardEvent) => {
       const eventTarget = e.target as HTMLElement;
       const releventFilter = eventTarget.closest('.filter') as HTMLFieldSetElement;
@@ -63,7 +66,7 @@ import * as render from './render.js';
       }
     };
 
-    userFilterWrapper.addEventListener('keydown', handleKeyDown(filter, updateFilter, promoteFilter, demoteFilter), true);
+    userFilterWrapper.addEventListener('keydown', handleKeyDown(filter, updateFilter, promoteFilter, demoteFilter, toggleFilter, keyCode), true);
 
     const dragHandle = render.buildElement('button', { type: 'button' }, ['filter__drag_handle']);
     dragHandle.addEventListener('mousedown', () => { filter.setAttribute('draggable', 'true') });
@@ -108,7 +111,7 @@ import * as render from './render.js';
       if (filter !== undefined) {
         const updateFilter = () => { update(image, filters, canvas); };
         const handleInput: render.EventListenerCallback = () => { update(image, filters, canvas); };
-        const userFilter = buildUserFilter(name, image, filters, canvas, keyCode, handleInput, updateFilter, promoteFilter, demoteFilter);
+        const userFilter = buildUserFilter(name, image, filters, canvas, keyCode, handleInput, updateFilter, promoteFilter, demoteFilter, toggleFilter);
         form.appendChild(userFilter);
       }
     });
@@ -175,7 +178,8 @@ import * as render from './render.js';
     });
   }
 
-  const toggleFilter = (filter: HTMLElement): void => {
+  type ToggleFilter = (filter: HTMLElement) => void;
+  const toggleFilter: ToggleFilter = (filter) => {
     if (filter.classList.contains('active')) {
       turnOffFilter(filter);
     } else {
