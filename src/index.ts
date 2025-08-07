@@ -33,9 +33,11 @@ import * as render from './render.js';
           break;
         case keyCode.up:
           promoteFilter(releventFilter);
+          update(image, filters, canvas);
           break;
         case keyCode.down:
           demoteFilter(releventFilter);
+          update(image, filters, canvas);
           break;
         case keyCode.left:
         case keyCode.right:
