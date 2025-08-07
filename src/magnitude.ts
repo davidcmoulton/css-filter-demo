@@ -1,15 +1,7 @@
 import { Config, FilterConstraints } from "./config";
 import * as render from './render.js';
 
-export const buildComponent = (
-    name: string,
-    filterConfig: FilterConstraints,
-    inputHandler: render.EventListenerCallback,
-    image: HTMLImageElement,
-    filters: Config['availableFilters'],
-    canvas: HTMLCanvasElement
-  ): HTMLElement => {
-
+export const buildComponent = (name: string, filterConfig: FilterConstraints, inputHandler: render.EventListenerCallback): HTMLElement => {
     const magnitudeWrapper = render.buildElement('div', {}, ['filter__slider']);
 
     const magnitudeLabel = render.buildElement('label', { for: `magnitude_${name}`}, ['visually-hidden']);

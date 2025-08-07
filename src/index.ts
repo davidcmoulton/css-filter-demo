@@ -87,7 +87,7 @@ import * as render from './render.js';
     filter.appendChild(userFilterWrapper);
 
     const updateHandler = (e: Event) => { update(image, filters, canvas); };
-    const magitudeComponent = magnitude.buildComponent(filterName, filterConstraints, updateHandler, image, filters, canvas);
+    const magitudeComponent = magnitude.buildComponent(filterName, filterConstraints, updateHandler);
     filter.appendChild(magitudeComponent);
 
     return filter;
