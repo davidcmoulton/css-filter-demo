@@ -1,41 +1,10 @@
 import { config, Config, FilterConstraints } from './config.js';
+import * as magnitude from './magnitude.js';
 import * as render from './render.js';
 
 (function (window, config: Config) {
 
 // RENDERING
-
-  const buildMagnitudeComponent = (
-    name: string,
-    filterConfig: FilterConstraints,
-    inputHandler: render.EventListenerCallback,
-    image: HTMLImageElement,
-    filters: Config['availableFilters'],
-    canvas: HTMLCanvasElement
-  ): HTMLElement => {
-
-    const magnitudeWrapper = render.buildElement('div', {}, ['filter__slider']);
-
-    const magnitudeLabel = render.buildElement('label', { for: `magnitude_${name}`}, ['visually-hidden']);
-    magnitudeLabel.innerHTML = 'Magnitude:';
-    magnitudeWrapper.appendChild(magnitudeLabel);
-
-    const magnitudeAttributes = {
-        disabled: 'disabled',
-        type: 'range',
-        id: `magnitude_${name}`,
-        value: filterConfig.initial,
-        min: filterConfig.min,
-        max: filterConfig.max,
-        step: filterConfig.step
-      };
-
-    const magnitude = render.buildElement('input', magnitudeAttributes);
-    magnitude.addEventListener('input', (e) => { update(image, filters, canvas); });
-    magnitudeWrapper.appendChild(magnitude);
-
-    return magnitudeWrapper;
-  };
 
   const buildUserFilter = (
     filterName: string,
@@ -99,7 +68,7 @@ import * as render from './render.js';
     userFilterLabel.appendChild(document.createTextNode(')'));
 
     const updateHandler = (e: Event) => { update(image, filters, canvas); };
-    const magitudeComponent = buildMagnitudeComponent(filterName, filterContraints, updateHandler, image, filters, canvas);
+    const magitudeComponent = magnitude.buildComponent(filterName, filterContraints, updateHandler, image, filters, canvas);
     filter.appendChild(magitudeComponent);
 
     return filter;

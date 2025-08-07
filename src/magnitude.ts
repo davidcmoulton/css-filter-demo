@@ -1,7 +1,7 @@
 import { Config, FilterConstraints } from "./config";
 import * as render from './render.js';
 
-export const buildMagnitudeComponent = (
+export const buildComponent = (
     name: string,
     filterConfig: FilterConstraints,
     inputHandler: render.EventListenerCallback,
