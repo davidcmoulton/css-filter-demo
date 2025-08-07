@@ -35,18 +35,15 @@ import * as render from './render.js';
           break;
         case keyCode.up:
           e.preventDefault();
-          e.stopPropagation();
           promoteFilter(releventFilter);
           break;
         case keyCode.down:
           e.preventDefault();
-          e.stopPropagation();
           demoteFilter(releventFilter);
           break;
         case keyCode.left:
         case keyCode.right:
           e.preventDefault();
-          e.stopPropagation();
           const slider = filter.querySelector('input[type="range"]') as HTMLInputElement;
           slider.focus();
           break;
