@@ -5,6 +5,28 @@ import * as render from './render.js';
 
 // RENDERING
 
+  const buildMagnitudeComponent = (
+    name: string,
+    min: number,
+    max: number,
+    step: number,
+    value: number,
+    image: HTMLImageElement,
+    filters: Config['availableFilters'],
+    canvas: HTMLCanvasElement
+  ): HTMLElement => {
+    const magnitudeWrapper = render.buildElement('div', {}, ['filter__slider']);
+    const magnitudeLabel = render.buildElement('label', { for: `magnitude_${name}`}, ['visually-hidden']);
+    magnitudeLabel.innerHTML = 'Magnitude:';
+    magnitudeWrapper.appendChild(magnitudeLabel);
+
+    const magnitude = render.buildElement('input', { disabled: 'disabled', type: 'range', id: `magnitude_${name}`, value, min, max, step });
+    magnitude.addEventListener('input', (e) => { update(image, filters, canvas); });
+    magnitudeWrapper.appendChild(magnitude);
+
+    return magnitudeWrapper;
+  };
+
   const buildUserFilter = (
     name: string,
     min: number,
@@ -56,12 +78,6 @@ import * as render from './render.js';
     dragHandle.addEventListener('mouseup', () => { filter.removeAttribute('draggable') });
     dragHandle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" data-filter-move-icon><path d="M0 0h24v24H0z" fill="none"/><path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"/></svg>';
 
-    const magnitudeWrapper = render.buildElement('div', {}, ['filter__slider']);
-    const magnitudeLabel = render.buildElement('label', { for: `magnitude_${name}`}, ['visually-hidden']);
-    const magnitude = render.buildElement('input', { disabled: 'disabled', type: 'range', id: `magnitude_${name}`, value, min, max, step });
-    magnitudeLabel.innerHTML = 'Magnitude:';
-    magnitude.addEventListener('input', (e) => { update(image, filters, canvas); });
-
     filter.appendChild(userFilterWrapper);
     userFilterWrapper.appendChild(userFilterToggle);
     userFilterWrapper.appendChild(userFilterLabel);
@@ -70,9 +86,17 @@ import * as render from './render.js';
     userFilterLabel.appendChild(render.buildElement('output', { id: `magnitudeReporter_${name}` }));
     userFilterLabel.appendChild(document.createTextNode(')'));
 
-    filter.appendChild(magnitudeWrapper);
-    magnitudeWrapper.appendChild(magnitudeLabel);
-    magnitudeWrapper.appendChild(magnitude);
+    const magitudeComponent = buildMagnitudeComponent(
+      name,
+      min,
+      max,
+      step,
+      value,
+      image,
+      filters,
+      canvas
+    );
+    filter.appendChild(magitudeComponent);
 
     return filter;
   };
