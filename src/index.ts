@@ -62,7 +62,7 @@ import * as render from './render.js';
     if (potentialFilterConstraints === undefined) {
       throw new Error(`Missing configuration for "${filterName}" filter.`);
     }
-    const filterContraints = potentialFilterConstraints;
+    const filterConstraints = potentialFilterConstraints;
 
     const filter = render.buildElement('fieldset', { id: `filter_${filterName}` }, ['filter']) as HTMLFieldSetElement;
 
@@ -87,7 +87,7 @@ import * as render from './render.js';
     userFilterLabel.appendChild(document.createTextNode(')'));
 
     const updateHandler = (e: Event) => { update(image, filters, canvas); };
-    const magitudeComponent = magnitude.buildComponent(filterName, filterContraints, updateHandler, image, filters, canvas);
+    const magitudeComponent = magnitude.buildComponent(filterName, filterConstraints, updateHandler, image, filters, canvas);
     filter.appendChild(magitudeComponent);
 
     return filter;
