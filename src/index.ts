@@ -8,6 +8,7 @@ import * as render from './render.js';
   const buildMagnitudeComponent = (
     name: string,
     filterConfig: FilterConstraints,
+    inputHandler: render.EventListenerCallback,
     image: HTMLImageElement,
     filters: Config['availableFilters'],
     canvas: HTMLCanvasElement
@@ -97,7 +98,8 @@ import * as render from './render.js';
     userFilterLabel.appendChild(render.buildElement('output', { id: `magnitudeReporter_${filterName}` }));
     userFilterLabel.appendChild(document.createTextNode(')'));
 
-    const magitudeComponent = buildMagnitudeComponent(filterName, filterContraints, image, filters, canvas);
+    const updateHandler = (e: Event) => { update(image, filters, canvas); };
+    const magitudeComponent = buildMagnitudeComponent(filterName, filterContraints, updateHandler, image, filters, canvas);
     filter.appendChild(magitudeComponent);
 
     return filter;
