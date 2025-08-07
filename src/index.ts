@@ -16,7 +16,8 @@ import * as render from './render.js';
     keyCode: Config['keyCode'],
     handleInput: render.EventListenerCallback,
     updateFilter: UpdateFilter,
-    promoteFilter: PromoteFilter
+    promoteFilter: PromoteFilter,
+    demoteFilter: DemoteFilter
   ): HTMLFieldSetElement => {
 
     const potentialFilterConstraints = config['availableFilters'][filterName];
@@ -35,7 +36,8 @@ import * as render from './render.js';
     const handleKeyDown = (
       filter: HTMLFieldSetElement,
       updateFilter: UpdateFilter,
-      promoteFilter: PromoteFilter
+      promoteFilter: PromoteFilter,
+      demoteFilter: DemoteFilter
     ) => (e: KeyboardEvent) => {
       const eventTarget = e.target as HTMLElement;
       const releventFilter = eventTarget.closest('.filter') as HTMLFieldSetElement;
@@ -61,7 +63,7 @@ import * as render from './render.js';
       }
     };
 
-    userFilterWrapper.addEventListener('keydown', handleKeyDown(filter, updateFilter, promoteFilter), true);
+    userFilterWrapper.addEventListener('keydown', handleKeyDown(filter, updateFilter, promoteFilter, demoteFilter), true);
 
     const dragHandle = render.buildElement('button', { type: 'button' }, ['filter__drag_handle']);
     dragHandle.addEventListener('mousedown', () => { filter.setAttribute('draggable', 'true') });
@@ -106,7 +108,7 @@ import * as render from './render.js';
       if (filter !== undefined) {
         const updateFilter = () => { update(image, filters, canvas); };
         const handleInput: render.EventListenerCallback = () => { update(image, filters, canvas); };
-        const userFilter = buildUserFilter(name, image, filters, canvas, keyCode, handleInput, updateFilter, promoteFilter);
+        const userFilter = buildUserFilter(name, image, filters, canvas, keyCode, handleInput, updateFilter, promoteFilter, demoteFilter);
         form.appendChild(userFilter);
       }
     });
@@ -196,7 +198,8 @@ import * as render from './render.js';
     }
   };
 
-  const demoteFilter = (filter: HTMLFieldSetElement): void => {
+  type DemoteFilter = (filter: HTMLFieldSetElement) => void;
+  const demoteFilter: DemoteFilter = (filter) => {
     const parentElement = filter.parentElement;
     if (parentElement !== null) {
       const insertionPoint = filter.nextElementSibling?.nextElementSibling;
