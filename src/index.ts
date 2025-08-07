@@ -3,23 +3,6 @@ import * as render from './render.js';
 
 (function (window, config: Config) {
 
-    // Keyboard interaction
-    const handleKeyUp = (e: KeyboardEvent, keyCode: Config['keyCode']): void => {
-      const eventTarget = e.target as HTMLElement;
-      const filter = eventTarget.closest('.filter') as HTMLElement;
-      if (filter !== null) {
-        switch (e.keyCode) {
-          case keyCode.enter:
-            toggleFilter(filter);
-          break;
-          default:
-            e.preventDefault();
-            e.stopPropagation();
-          break;
-        }
-      }
-    };
-
 // RENDERING
 
   const buildUserFilter = (
@@ -47,6 +30,9 @@ import * as render from './render.js';
       const eventTarget = e.target as HTMLElement;
       const releventFilter = eventTarget.closest('.filter') as HTMLFieldSetElement;
       switch (e.keyCode) {
+        case keyCode.enter:
+          toggleFilter(filter);
+          break;
         case keyCode.up:
           e.preventDefault();
           e.stopPropagation();
@@ -68,7 +54,6 @@ import * as render from './render.js';
           break;
       }
     }, true);
-    userFilterWrapper.addEventListener('keyup', (e) => handleKeyUp(e, keyCode));
 
     const dragHandle = render.buildElement('button', { type: 'button' }, ['filter__drag_handle']);
     dragHandle.addEventListener('mousedown', () => { filter.setAttribute('draggable', 'true') });
