@@ -49,6 +49,14 @@ import * as render from './render.js';
     }
   };
 
+  const buildUserFilterLabel = (filterName: string): HTMLLabelElement => {
+    const userFilterLabel = render.buildElement('label', { for: filterName }, ['filter__label']) as HTMLLabelElement;
+    userFilterLabel.appendChild(document.createTextNode(`${filterName}(`));
+    userFilterLabel.appendChild(render.buildElement('output', { id: `magnitudeReporter_${filterName}` }));
+    userFilterLabel.appendChild(document.createTextNode(')'));
+    return userFilterLabel;
+  };
+
   const buildUserFilter = (
     filterName: string,
     image: HTMLImageElement,
@@ -73,10 +81,7 @@ import * as render from './render.js';
     userFilterToggle.addEventListener('input', handleInput)
     userFilterWrapper.appendChild(userFilterToggle);
 
-    const userFilterLabel = render.buildElement('label', { for: filterName }, ['filter__label']);
-    userFilterLabel.appendChild(document.createTextNode(`${filterName}(`));
-    userFilterLabel.appendChild(render.buildElement('output', { id: `magnitudeReporter_${filterName}` }));
-    userFilterLabel.appendChild(document.createTextNode(')'));
+    const userFilterLabel = buildUserFilterLabel(filterName);
     userFilterWrapper.appendChild(userFilterLabel);
 
     const dragHandle = render.buildElement('button', { type: 'button' }, ['filter__drag_handle']);
