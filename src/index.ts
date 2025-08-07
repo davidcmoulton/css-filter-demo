@@ -16,6 +16,7 @@ import * as render from './render.js';
     keyCode: Config['keyCode'],
     handleInput: render.EventListenerCallback,
     updateFilter: UpdateFilter,
+    promoteFilter: PromoteFilter
   ): HTMLFieldSetElement => {
 
     const potentialFilterConstraints = config['availableFilters'][filterName];
@@ -33,7 +34,8 @@ import * as render from './render.js';
 
     const handleKeyDown = (
       filter: HTMLFieldSetElement,
-      updateFilter: UpdateFilter
+      updateFilter: UpdateFilter,
+      promoteFilter: PromoteFilter
     ) => (e: KeyboardEvent) => {
       const eventTarget = e.target as HTMLElement;
       const releventFilter = eventTarget.closest('.filter') as HTMLFieldSetElement;
@@ -59,7 +61,7 @@ import * as render from './render.js';
       }
     };
 
-    userFilterWrapper.addEventListener('keydown', handleKeyDown(filter, updateFilter), true);
+    userFilterWrapper.addEventListener('keydown', handleKeyDown(filter, updateFilter, promoteFilter), true);
 
     const dragHandle = render.buildElement('button', { type: 'button' }, ['filter__drag_handle']);
     dragHandle.addEventListener('mousedown', () => { filter.setAttribute('draggable', 'true') });
@@ -104,7 +106,7 @@ import * as render from './render.js';
       if (filter !== undefined) {
         const updateFilter = () => { update(image, filters, canvas); };
         const handleInput: render.EventListenerCallback = () => { update(image, filters, canvas); };
-        const userFilter = buildUserFilter(name, image, filters, canvas, keyCode, handleInput, updateFilter);
+        const userFilter = buildUserFilter(name, image, filters, canvas, keyCode, handleInput, updateFilter, promoteFilter);
         form.appendChild(userFilter);
       }
     });
@@ -181,7 +183,8 @@ import * as render from './render.js';
     innerInput?.focus();
   };
 
-  const promoteFilter = (filter: HTMLFieldSetElement): void => {
+  type PromoteFilter = (filter: HTMLFieldSetElement) => void;
+  const promoteFilter: PromoteFilter = (filter)=> {
     const parentElement = filter.parentElement;
     if (parentElement !== null) {
       const insertionPoint = filter.previousElementSibling;
