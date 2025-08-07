@@ -12,14 +12,14 @@ import * as render from './render.js';
     filters: Config['availableFilters'],
     canvas: HTMLCanvasElement
   ): HTMLElement => {
+
     const magnitudeWrapper = render.buildElement('div', {}, ['filter__slider']);
+
     const magnitudeLabel = render.buildElement('label', { for: `magnitude_${name}`}, ['visually-hidden']);
     magnitudeLabel.innerHTML = 'Magnitude:';
     magnitudeWrapper.appendChild(magnitudeLabel);
 
-    const magnitude = render.buildElement(
-      'input',
-      {
+    const magnitudeAttributes = {
         disabled: 'disabled',
         type: 'range',
         id: `magnitude_${name}`,
@@ -27,8 +27,9 @@ import * as render from './render.js';
         min: filterConfig.min,
         max: filterConfig.max,
         step: filterConfig.step
-      }
-    );
+      };
+
+    const magnitude = render.buildElement('input', magnitudeAttributes);
     magnitude.addEventListener('input', (e) => { update(image, filters, canvas); });
     magnitudeWrapper.appendChild(magnitude);
 
@@ -45,7 +46,7 @@ import * as render from './render.js';
 
     const potentialFilterConstraints = config['availableFilters'][filterName];
     if (potentialFilterConstraints === undefined) {
-      throw new Error(`Missing configuration for "${filterName}" filter`);
+      throw new Error(`Missing configuration for "${filterName}" filter.`);
     }
     const filterContraints = potentialFilterConstraints;
 
