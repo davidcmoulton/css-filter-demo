@@ -25,8 +25,6 @@ import * as render from './render.js';
     userFilterToggle.addEventListener('input', () => { update(image, filters, canvas); })
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      console.log(e.keyCode);
-      console.log(e.target);
       const eventTarget = e.target as HTMLElement;
       const releventFilter = eventTarget.closest('.filter') as HTMLFieldSetElement;
       switch (e.keyCode) {
