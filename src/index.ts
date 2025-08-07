@@ -24,7 +24,7 @@ import * as render from './render.js';
     const userFilterToggle = render.buildElement('input', { id: name, type: 'checkbox', name: 'filters', value: 'on' }, ['visually-hidden']);
     userFilterToggle.addEventListener('input', () => { update(image, filters, canvas); })
 
-    userFilterWrapper.addEventListener('keydown', (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       console.log(e.keyCode);
       console.log(e.target);
       const eventTarget = e.target as HTMLElement;
@@ -53,7 +53,9 @@ import * as render from './render.js';
         default:
           break;
       }
-    }, true);
+    };
+
+    userFilterWrapper.addEventListener('keydown', handleKeyDown, true);
 
     const dragHandle = render.buildElement('button', { type: 'button' }, ['filter__drag_handle']);
     dragHandle.addEventListener('mousedown', () => { filter.setAttribute('draggable', 'true') });
