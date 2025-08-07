@@ -11,7 +11,8 @@ import * as render from './render.js';
     image: HTMLImageElement,
     filters: Config['availableFilters'],
     canvas: HTMLCanvasElement,
-    keyCode: Config['keyCode']
+    keyCode: Config['keyCode'],
+    handleInput: render.EventListenerCallback,
   ): HTMLFieldSetElement => {
 
     const potentialFilterConstraints = config['availableFilters'][filterName];
@@ -25,7 +26,7 @@ import * as render from './render.js';
     const userFilterWrapper = render.buildElement('div', {}, ['filter__toggle']);
     const userFilterLabel = render.buildElement('label', { for: filterName }, ['filter__label']);
     const userFilterToggle = render.buildElement('input', { id: filterName, type: 'checkbox', name: 'filters', value: 'on' }, ['visually-hidden']);
-    userFilterToggle.addEventListener('input', () => { update(image, filters, canvas); })
+    userFilterToggle.addEventListener('input', handleInput)
 
     const handleKeyDown = (e: KeyboardEvent) => {
       const eventTarget = e.target as HTMLElement;
@@ -95,7 +96,8 @@ import * as render from './render.js';
     Object.keys(filters).forEach((name) => {
       const filter = filters[name];
       if (filter !== undefined) {
-        const userFilter = buildUserFilter(name, image, filters, canvas, keyCode);
+        const handleFilterInput: render.EventListenerCallback = () => { update(image, filters, canvas); };
+        const userFilter = buildUserFilter(name, image, filters, canvas, keyCode, handleFilterInput);
         form.appendChild(userFilter);
       }
     });
