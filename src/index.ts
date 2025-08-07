@@ -8,17 +8,56 @@ import * as render from './render.js';
 
   type UpdateFilter = () => void;
 
+  type KeyDownHandler = (filter: HTMLFieldSetElement) => (e: KeyboardEvent) => void;
+
+  type HandleKeyDown = (
+    updateFilter: UpdateFilter,
+    promoteFilter: PromoteFilter,
+    demoteFilter: DemoteFilter,
+    toggleFilter: ToggleFilter,
+    keyCode: Config['keyCode']
+  ) => (filter: HTMLFieldSetElement)
+  => (e: KeyboardEvent) => void;
+
+
+  const handleKeyDown: HandleKeyDown = (
+    updateFilter: UpdateFilter,
+    promoteFilter: PromoteFilter,
+    demoteFilter: DemoteFilter,
+    toggleFilter: ToggleFilter,
+    keyCode: Config['keyCode']
+  ) => (filter: HTMLFieldSetElement) => (e: KeyboardEvent) => {
+    const eventTarget = e.target as HTMLElement;
+    const releventFilter = eventTarget.closest('.filter') as HTMLFieldSetElement;
+    switch (e.keyCode) {
+      case keyCode.enter:
+        toggleFilter(filter);
+        break;
+      case keyCode.up:
+        promoteFilter(releventFilter);
+        updateFilter();
+        break;
+      case keyCode.down:
+        demoteFilter(releventFilter);
+        updateFilter();
+        break;
+      case keyCode.left:
+      case keyCode.right:
+        const slider = filter.querySelector('input[type="range"]') as HTMLInputElement;
+        slider.focus();
+        break;
+      default:
+        break;
+    }
+  };
+
   const buildUserFilter = (
     filterName: string,
     image: HTMLImageElement,
     filters: Config['availableFilters'],
     canvas: HTMLCanvasElement,
-    keyCode: Config['keyCode'],
     handleInput: render.EventListenerCallback,
-    updateFilter: UpdateFilter,
-    promoteFilter: PromoteFilter,
-    demoteFilter: DemoteFilter,
-    toggleFilter: ToggleFilter
+    keyDownHandler: KeyDownHandler,
   ): HTMLFieldSetElement => {
 
     const potentialFilterConstraints = config['availableFilters'][filterName];
@@ -34,39 +73,7 @@ import * as render from './render.js';
     const userFilterToggle = render.buildElement('input', { id: filterName, type: 'checkbox', name: 'filters', value: 'on' }, ['visually-hidden']);
     userFilterToggle.addEventListener('input', handleInput)
 
-    const handleKeyDown = (
-      filter: HTMLFieldSetElement,
-      updateFilter: UpdateFilter,
-      promoteFilter: PromoteFilter,
-      demoteFilter: DemoteFilter,
-      toggleFilter: ToggleFilter,
-      keyCode: Config['keyCode']
-    ) => (e: KeyboardEvent) => {
-      const eventTarget = e.target as HTMLElement;
-      const releventFilter = eventTarget.closest('.filter') as HTMLFieldSetElement;
-      switch (e.keyCode) {
-        case keyCode.enter:
-          toggleFilter(filter);
-          break;
-        case keyCode.up:
-          promoteFilter(releventFilter);
-          updateFilter();
-          break;
-        case keyCode.down:
-          demoteFilter(releventFilter);
-          updateFilter();
-          break;
-        case keyCode.left:
-        case keyCode.right:
-          const slider = filter.querySelector('input[type="range"]') as HTMLInputElement;
-          slider.focus();
-          break;
-        default:
-          break;
-      }
-    };
-
-    userFilterWrapper.addEventListener('keydown', handleKeyDown(filter, updateFilter, promoteFilter, demoteFilter, toggleFilter, keyCode), true);
+    userFilterWrapper.addEventListener('keydown', keyDownHandler(filter), true);
 
     const dragHandle = render.buildElement('button', { type: 'button' }, ['filter__drag_handle']);
     dragHandle.addEventListener('mousedown', () => { filter.setAttribute('draggable', 'true') });
@@ -111,7 +118,9 @@ import * as render from './render.js';
       if (filter !== undefined) {
         const updateFilter = () => { update(image, filters, canvas); };
         const handleInput: render.EventListenerCallback = () => { update(image, filters, canvas); };
-        const userFilter = buildUserFilter(name, image, filters, canvas, keyCode, handleInput, updateFilter, promoteFilter, demoteFilter, toggleFilter);
+
+        const keyDownHandler: KeyDownHandler = handleKeyDown(updateFilter, promoteFilter, demoteFilter, toggleFilter, keyCode);
+        const userFilter = buildUserFilter(name, image, filters, canvas, handleInput, keyDownHandler);
         form.appendChild(userFilter);
       }
     });
