@@ -6,6 +6,8 @@ import * as render from './render.js';
 
 // RENDERING
 
+  type UpdateFilter = () => void;
+
   const buildUserFilter = (
     filterName: string,
     image: HTMLImageElement,
@@ -13,6 +15,7 @@ import * as render from './render.js';
     canvas: HTMLCanvasElement,
     keyCode: Config['keyCode'],
     handleInput: render.EventListenerCallback,
+    updateFilter: UpdateFilter,
   ): HTMLFieldSetElement => {
 
     const potentialFilterConstraints = config['availableFilters'][filterName];
@@ -28,7 +31,10 @@ import * as render from './render.js';
     const userFilterToggle = render.buildElement('input', { id: filterName, type: 'checkbox', name: 'filters', value: 'on' }, ['visually-hidden']);
     userFilterToggle.addEventListener('input', handleInput)
 
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (
+      filter: HTMLFieldSetElement,
+      updateFilter: UpdateFilter
+    ) => (e: KeyboardEvent) => {
       const eventTarget = e.target as HTMLElement;
       const releventFilter = eventTarget.closest('.filter') as HTMLFieldSetElement;
       switch (e.keyCode) {
@@ -37,11 +43,11 @@ import * as render from './render.js';
           break;
         case keyCode.up:
           promoteFilter(releventFilter);
-          update(image, filters, canvas);
+          updateFilter();
           break;
         case keyCode.down:
           demoteFilter(releventFilter);
-          update(image, filters, canvas);
+          updateFilter();
           break;
         case keyCode.left:
         case keyCode.right:
@@ -53,7 +59,7 @@ import * as render from './render.js';
       }
     };
 
-    userFilterWrapper.addEventListener('keydown', handleKeyDown, true);
+    userFilterWrapper.addEventListener('keydown', handleKeyDown(filter, updateFilter), true);
 
     const dragHandle = render.buildElement('button', { type: 'button' }, ['filter__drag_handle']);
     dragHandle.addEventListener('mousedown', () => { filter.setAttribute('draggable', 'true') });
@@ -96,8 +102,9 @@ import * as render from './render.js';
     Object.keys(filters).forEach((name) => {
       const filter = filters[name];
       if (filter !== undefined) {
-        const handleFilterInput: render.EventListenerCallback = () => { update(image, filters, canvas); };
-        const userFilter = buildUserFilter(name, image, filters, canvas, keyCode, handleFilterInput);
+        const updateFilter = () => { update(image, filters, canvas); };
+        const handleInput: render.EventListenerCallback = () => { update(image, filters, canvas); };
+        const userFilter = buildUserFilter(name, image, filters, canvas, keyCode, handleInput, updateFilter);
         form.appendChild(userFilter);
       }
     });
