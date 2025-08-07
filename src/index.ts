@@ -124,15 +124,8 @@ import * as render from './render.js';
     Object.keys(filters).forEach((name) => {
       const filter = filters[name];
       if (filter !== undefined) {
-        form.appendChild(
-          buildUserFilter(
-            name,
-            image,
-            filters,
-            canvas,
-            keyCode
-          )
-        );
+        const userFilter = buildUserFilter(name, image, filters, canvas, keyCode);
+        form.appendChild(userFilter);
       }
     });
 
