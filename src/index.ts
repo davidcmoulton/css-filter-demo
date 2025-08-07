@@ -1,4 +1,4 @@
-import { config, Config } from './config.js';
+import { config, Config, FilterConstraints } from './config.js';
 import * as render from './render.js';
 
 (function (window, config: Config) {
@@ -7,10 +7,7 @@ import * as render from './render.js';
 
   const buildMagnitudeComponent = (
     name: string,
-    min: number,
-    max: number,
-    step: number,
-    value: number,
+    filterConfig: FilterConstraints,
     image: HTMLImageElement,
     filters: Config['availableFilters'],
     canvas: HTMLCanvasElement
@@ -20,7 +17,18 @@ import * as render from './render.js';
     magnitudeLabel.innerHTML = 'Magnitude:';
     magnitudeWrapper.appendChild(magnitudeLabel);
 
-    const magnitude = render.buildElement('input', { disabled: 'disabled', type: 'range', id: `magnitude_${name}`, value, min, max, step });
+    const magnitude = render.buildElement(
+      'input',
+      {
+        disabled: 'disabled',
+        type: 'range',
+        id: `magnitude_${name}`,
+        value: filterConfig.initial,
+        min: filterConfig.min,
+        max: filterConfig.max,
+        step: filterConfig.step
+      }
+    );
     magnitude.addEventListener('input', (e) => { update(image, filters, canvas); });
     magnitudeWrapper.appendChild(magnitude);
 
@@ -28,22 +36,24 @@ import * as render from './render.js';
   };
 
   const buildUserFilter = (
-    name: string,
-    min: number,
-    max: number,
-    step: number,
-    value: number,
+    filterName: string,
     image: HTMLImageElement,
     filters: Config['availableFilters'],
     canvas: HTMLCanvasElement,
     keyCode: Config['keyCode']
   ): HTMLFieldSetElement => {
 
-    const filter = render.buildElement('fieldset', { id: `filter_${name}` }, ['filter']) as HTMLFieldSetElement;
+    const potentialFilterConstraints = config['availableFilters'][filterName];
+    if (potentialFilterConstraints === undefined) {
+      throw new Error(`Missing configuration for "${filterName}" filter`);
+    }
+    const filterContraints = potentialFilterConstraints;
+
+    const filter = render.buildElement('fieldset', { id: `filter_${filterName}` }, ['filter']) as HTMLFieldSetElement;
 
     const userFilterWrapper = render.buildElement('div', {}, ['filter__toggle']);
-    const userFilterLabel = render.buildElement('label', { for: name }, ['filter__label']);
-    const userFilterToggle = render.buildElement('input', { id: name, type: 'checkbox', name: 'filters', value: 'on' }, ['visually-hidden']);
+    const userFilterLabel = render.buildElement('label', { for: filterName }, ['filter__label']);
+    const userFilterToggle = render.buildElement('input', { id: filterName, type: 'checkbox', name: 'filters', value: 'on' }, ['visually-hidden']);
     userFilterToggle.addEventListener('input', () => { update(image, filters, canvas); })
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -82,20 +92,11 @@ import * as render from './render.js';
     userFilterWrapper.appendChild(userFilterToggle);
     userFilterWrapper.appendChild(userFilterLabel);
     userFilterWrapper.appendChild(dragHandle);
-    userFilterLabel.appendChild(document.createTextNode(`${name}(`));
-    userFilterLabel.appendChild(render.buildElement('output', { id: `magnitudeReporter_${name}` }));
+    userFilterLabel.appendChild(document.createTextNode(`${filterName}(`));
+    userFilterLabel.appendChild(render.buildElement('output', { id: `magnitudeReporter_${filterName}` }));
     userFilterLabel.appendChild(document.createTextNode(')'));
 
-    const magitudeComponent = buildMagnitudeComponent(
-      name,
-      min,
-      max,
-      step,
-      value,
-      image,
-      filters,
-      canvas
-    );
+    const magitudeComponent = buildMagnitudeComponent(filterName, filterContraints, image, filters, canvas);
     filter.appendChild(magitudeComponent);
 
     return filter;
@@ -125,10 +126,6 @@ import * as render from './render.js';
         form.appendChild(
           buildUserFilter(
             name,
-            filter.min,
-            filter.max,
-            filter.step,
-            filter.initial,
             image,
             filters,
             canvas,

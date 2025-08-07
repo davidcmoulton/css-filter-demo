@@ -2,14 +2,17 @@ type DefaultImagePath = string;
 
 type KeyCode = { [index: string]: number };
 
-type Unit = 'px' | '%' | 'deg';
-
-export type FilterProperties = {
+export type FilterConstraints = {
   min: number,
   max: number,
   step: number,
-  unit: Unit,
   initial: number,
+}
+
+type Unit = 'px' | '%' | 'deg';
+
+export type FilterProperties = FilterConstraints & {
+  unit: Unit,
 };
 
 type AvailableFilters = { [index: string]: FilterProperties };
