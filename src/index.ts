@@ -1,5 +1,4 @@
-import { config, Config, FilterConstraints } from './config.js';
-import * as magnitude from './magnitude.js';
+import { config, Config } from './config.js';
 import * as render from './render.js';
 import { build as buildUserFilter } from './user-filter.js';
 
