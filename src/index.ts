@@ -87,10 +87,11 @@ import * as render from './render.js';
     filterName: string,
     handleInput: render.EventListenerCallback,
     keyDownHandler: KeyDownHandler,
-    updateHandler: render.EventListenerCallback
+    updateHandler: render.EventListenerCallback,
+    availableFilters: Config['availableFilters']
   ): HTMLFieldSetElement => {
 
-    const potentialFilterConstraints = config['availableFilters'][filterName];
+    const potentialFilterConstraints = availableFilters[filterName];
     if (potentialFilterConstraints === undefined) {
       throw new Error(`Missing configuration for "${filterName}" filter.`);
     }
@@ -132,7 +133,7 @@ import * as render from './render.js';
         const handleInput: render.EventListenerCallback = () => { update(image, filters, canvas); };
         const updateHandler = (e: Event) => { update(image, filters, canvas); };
         const keyDownHandler: KeyDownHandler = handleKeyDown(updateFilter, promoteFilter, demoteFilter, toggleFilter, keyCode);
-        const userFilter = buildUserFilter(name, handleInput, keyDownHandler, updateHandler);
+        const userFilter = buildUserFilter(name, handleInput, keyDownHandler, updateHandler, config.availableFilters);
         form.appendChild(userFilter);
       }
     });
