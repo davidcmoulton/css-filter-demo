@@ -42,10 +42,10 @@ export const buildButton = (id: string, text: string, type: 'button' | 'reset', 
 }
 
 export const buildFieldsetElement: BuildFieldsetElement = (attributes, classes): HTMLFieldSetElement => {
-  const element = document.createElement('fieldset');
-  setElementAttributes(element, attributes);
-  classes?.forEach((className: string) => {element.classList.add(className)});
-  return element;
+  const fieldset = buildElement('fieldset', attributes, classes) as HTMLFieldSetElement;
+  setElementAttributes(fieldset, attributes);
+  classes?.forEach((className: string) => {fieldset.classList.add(className)});
+  return fieldset;
 }
 
 export const buildControls = (
