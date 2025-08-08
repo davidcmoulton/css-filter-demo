@@ -18,6 +18,11 @@ type BuildElement = (
   classes?: Array<string>
 ) => HTMLElement;
 
+type BuildFieldsetElement = (
+  attributes: { [index: string]: string | number },
+  classes?: Array<string>
+) => HTMLFieldSetElement;
+
 export const buildElement: BuildElement = (name, attributes, classes): HTMLElement => {
   const element = document.createElement(name);
   setElementAttributes(element, attributes);
@@ -34,6 +39,13 @@ export const buildButton = (id: string, text: string, type: 'button' | 'reset', 
     button.addEventListener('click', callback);
   }
   return button;
+}
+
+export const buildFieldsetElement: BuildFieldsetElement = (attributes, classes): HTMLFieldSetElement => {
+  const element = document.createElement('fieldset');
+  setElementAttributes(element, attributes);
+  classes?.forEach((className: string) => {element.classList.add(className)});
+  return element;
 }
 
 export const buildControls = (

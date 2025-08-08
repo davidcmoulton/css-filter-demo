@@ -52,7 +52,7 @@ export const build = (
   }
   const filterConstraints = potentialFilterConstraints;
 
-  const filter = render.buildElement('fieldset', { id: `filter_${filterName}` }, ['filter']) as HTMLFieldSetElement;
+  const filter = render.buildFieldsetElement({ id: `filter_${filterName}` }, ['filter']);
 
   const userFilterWrapper = buildUserFilterWrapper(filterName, handleInput, keyDownHandler, filter);
   filter.appendChild(userFilterWrapper);
